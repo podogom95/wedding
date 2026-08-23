@@ -747,3 +747,93 @@ const observer = new IntersectionObserver(
 
 document.querySelectorAll('.card')
 .forEach(el => observer.observe(el));
+
+
+// ==================================================
+// 배경음악
+// ==================================================
+
+const bgm = document.getElementById('bgm');
+const musicButton = document.getElementById('musicButton');
+
+let musicPlaying = false;
+
+
+// 음악 재생
+function playMusic() {
+
+    if (!bgm) {
+        return;
+    }
+
+    bgm.play()
+        .then(() => {
+
+            musicPlaying = true;
+
+            musicButton.classList.add('playing');
+
+        })
+        .catch(() => {
+
+            // 브라우저가 자동재생을 막은 경우
+            musicPlaying = false;
+
+        });
+
+}
+
+
+// 음악 정지
+function pauseMusic() {
+
+    if (!bgm) {
+        return;
+    }
+
+    bgm.pause();
+
+    musicPlaying = false;
+
+    musicButton.classList.remove('playing');
+
+}
+
+
+// 음악 버튼
+if (musicButton) {
+
+    musicButton.addEventListener('click', (e) => {
+
+        e.stopPropagation();
+
+        if (musicPlaying) {
+
+            pauseMusic();
+
+        } else {
+
+            playMusic();
+
+        }
+
+    });
+
+}
+
+
+// 첫 번째 사용자 터치에서 음악 시작
+document.addEventListener(
+    'touchstart',
+    () => {
+
+        if (!musicPlaying) {
+            playMusic();
+        }
+
+    },
+    {
+        once: true,
+        passive: true
+    }
+);
