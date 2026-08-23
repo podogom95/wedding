@@ -65,21 +65,37 @@ body{
     margin-top: 25px;
 }
 
-.map-buttons a{
+.map-buttons a {
     flex: 1;
     min-width: 90px;
 
-    padding: 12px 10px;
+    height: 50px;
+
+    padding: 8px 10px;
 
     border: 1px solid #ddd;
     border-radius: 10px;
 
     background: #fff;
-    color: #333;
 
     text-decoration: none;
-    text-align: center;
-    font-size: 14px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 3px;
+
+    overflow: hidden;
+}
+
+.map-buttons img {
+    max-height: 28px;
+    width: auto;
+
+    display: block;
+
+    object-fit: contain;
 }
 
 .accordion{
