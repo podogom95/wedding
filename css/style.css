@@ -295,3 +295,37 @@ body{
 body.gallery-open {
     overflow: hidden;
 }
+
+
+.music-button {
+    position: fixed;
+
+    right: 20px;
+    bottom: 20px;
+
+    z-index: 1000;
+
+    width: 45px;
+    height: 45px;
+
+    border: 1px solid rgba(255,255,255,0.6);
+    border-radius: 50%;
+
+    background: rgba(255,255,255,0.85);
+
+    color: #777;
+
+    font-size: 20px;
+
+    cursor: pointer;
+
+    -webkit-tap-highlight-color: transparent;
+
+    transition: all 0.3s ease;
+}
+
+.music-button.playing {
+    color: #c8aaa5;
+
+    transform: rotate(360deg);
+}
