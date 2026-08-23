@@ -158,8 +158,13 @@ body{
     user-select: none;
     -webkit-user-select: none;
     -webkit-user-drag: none;
-}
 
+    opacity: 1;
+    transition: opacity 0.25s ease;
+}
+.gallery-viewer img.fade-out {
+    opacity: 0;
+}
 .gallery-close,
 .gallery-prev,
 .gallery-next {
