@@ -906,3 +906,18 @@ document.addEventListener(
         passive: true
     }
 );
+
+document.addEventListener(
+    'wheel',
+    () => {
+
+        if (!musicPlaying) {
+            playMusic();
+        }
+
+    },
+    {
+        once: true,
+        passive: true
+    }
+);
