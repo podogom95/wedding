@@ -101,7 +101,7 @@ body{
     cursor: pointer;
     transition: all 0.3s ease;
 }
-.accordion-button:hover {
+.accordion:hover {
     background: #f1e9e6;
 }
 
