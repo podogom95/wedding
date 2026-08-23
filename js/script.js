@@ -129,18 +129,33 @@ if (musicButton && bgm) {
 
 
 // --------------------------------------------------
-// 첫 화면 클릭 → 음악 시작
+// 첫 화면 사용자 동작 → 음악 시작
 // --------------------------------------------------
 
+function startMusicFromUserInteraction() {
+
+    if (bgm && bgm.paused) {
+        playMusic();
+    }
+
+}
+
+
+// 모바일
 if (intro && bgm) {
 
-    intro.addEventListener("click", () => {
+    intro.addEventListener(
+        "touchstart",
+        startMusicFromUserInteraction,
+        { passive: true }
+    );
 
-        if (bgm.paused) {
-            playMusic();
-        }
 
-    });
+    // PC
+    intro.addEventListener(
+        "click",
+        startMusicFromUserInteraction
+    );
 
 }
 
