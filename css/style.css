@@ -2,7 +2,17 @@ body{
     margin:0;
     font-family:sans-serif;
     color:#333;
-    background:#fff;
+    background:#f7f7f7;
+}
+
+.container{
+    max-width:600px;
+    margin:30px auto;
+    background:white;
+    border-radius:20px;
+    overflow:hidden;
+    box-shadow:
+        0 10px 30px rgba(0,0,0,0.08);
 }
 
 .hero img{
