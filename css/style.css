@@ -74,14 +74,3 @@ body{
     display:none;
     padding:10px;
 }
-
-.fade{
-    opacity:0;
-    transform:translateY(30px);
-    transition:1s;
-}
-
-.fade.show{
-    opacity:1;
-    transform:none;
-}
