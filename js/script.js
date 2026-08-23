@@ -239,7 +239,7 @@ function showImage(index, direction) {
 
             // 현재 사진 페이드아웃
             galleryViewerImg.style.opacity =
-                "0";
+                "0.15";
 
 
             // 새 사진 페이드인
