@@ -38,11 +38,6 @@ body{
     display:block;
 }
 
-section{
-    padding:50px 20px;
-    text-align:center;
-}
-
 .grid{
     display:grid;
     grid-template-columns:1fr 1fr;
