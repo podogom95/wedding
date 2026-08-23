@@ -760,7 +760,7 @@ let musicPlaying = false;
 
 
 // --------------------------------------------------
-// 음악 버튼 상태
+// 버튼 상태 업데이트
 // --------------------------------------------------
 
 function updateMusicButton() {
@@ -772,7 +772,6 @@ function updateMusicButton() {
     if (musicPlaying) {
 
         musicButton.classList.add('playing');
-
         musicButton.textContent = '♪';
 
         musicButton.setAttribute(
@@ -783,7 +782,6 @@ function updateMusicButton() {
     } else {
 
         musicButton.classList.remove('playing');
-
         musicButton.textContent = '♫';
 
         musicButton.setAttribute(
@@ -792,7 +790,6 @@ function updateMusicButton() {
         );
 
     }
-
 }
 
 
@@ -806,21 +803,40 @@ function playMusic() {
         return;
     }
 
-    bgm.play()
-        .then(() => {
 
-            musicPlaying = true;
+    // 오디오가 준비되지 않은 경우
+    if (bgm.readyState === 0) {
+        bgm.load();
+    }
 
-            updateMusicButton();
 
-        })
-        .catch(() => {
+    const promise = bgm.play();
 
-            musicPlaying = false;
 
-            updateMusicButton();
+    if (promise !== undefined) {
 
-        });
+        promise
+            .then(() => {
+
+                musicPlaying = true;
+
+                updateMusicButton();
+
+            })
+            .catch((error) => {
+
+                console.log(
+                    'BGM 재생 실패:',
+                    error
+                );
+
+                musicPlaying = false;
+
+                updateMusicButton();
+
+            });
+
+    }
 
 }
 
@@ -850,21 +866,24 @@ function pauseMusic() {
 
 if (musicButton) {
 
-    musicButton.addEventListener('click', (e) => {
+    musicButton.addEventListener(
+        'click',
+        (e) => {
 
-        e.stopPropagation();
+            e.stopPropagation();
 
-        if (musicPlaying) {
+            if (musicPlaying) {
 
-            pauseMusic();
+                pauseMusic();
 
-        } else {
+            } else {
 
-            playMusic();
+                playMusic();
+
+            }
 
         }
-
-    });
+    );
 
 }
 
@@ -873,49 +892,86 @@ if (musicButton) {
 // 페이지 로딩 후 자동재생 시도
 // --------------------------------------------------
 
-window.addEventListener('load', () => {
+window.addEventListener(
+    'load',
+    () => {
+
+        playMusic();
+
+    }
+);
+
+
+// ==================================================
+// 사용자 상호작용 → 음악 재생
+// ==================================================
+
+let interactionUsed = false;
+
+
+function handleUserInteraction() {
+
+    if (interactionUsed) {
+        return;
+    }
+
+
+    if (musicPlaying) {
+        interactionUsed = true;
+        return;
+    }
+
 
     playMusic();
 
-});
 
+    /*
+       play()가 성공하면 다시 실행할 필요가 없으므로
+       일단 interactionUsed를 바로 true로 만들지 않는다.
 
-// --------------------------------------------------
-// 자동재생이 차단된 경우
-//
-// PC : 마우스 클릭
-// 모바일 : 터치
-// 태블릿 : 터치/펜
-//
-// 첫 사용자 입력에서 음악 재생
-// --------------------------------------------------
-
-function startMusicOnInteraction() {
-
-    if (!musicPlaying) {
-        playMusic();
-    }
+       Android에서 첫 이벤트가 play() 거부될 경우
+       다음 이벤트에서 다시 시도할 수 있도록 한다.
+    */
 
 }
 
 
-// PC 클릭 / 모바일 터치
+// --------------------------------------------------
+// PC 마우스 클릭
+// 모바일 터치
+// 태블릿 터치
+// --------------------------------------------------
+
 document.addEventListener(
     'pointerdown',
-    startMusicOnInteraction,
+    handleUserInteraction,
     {
-        once: true,
         passive: true
     }
 );
 
 
+// --------------------------------------------------
 // PC 마우스 휠
+// --------------------------------------------------
+
 document.addEventListener(
     'wheel',
-    startMusicOnInteraction,
+    handleUserInteraction,
     {
-        once: true,
+        passive: true
+    }
+);
+
+
+// --------------------------------------------------
+// Android / iPhone 터치 보조
+// --------------------------------------------------
+
+document.addEventListener(
+    'touchstart',
+    handleUserInteraction,
+    {
         passive: true
     }
 );
