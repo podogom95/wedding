@@ -359,14 +359,14 @@ if (galleryViewer) {
             // 왼쪽 스와이프 → 다음 사진
             if (diffX > 0) {
 
-                showImage(currentIndex + 1);
+                showImage(currentIndex + 1,'next');
 
             }
 
             // 오른쪽 스와이프 → 이전 사진
             else {
 
-                showImage(currentIndex - 1);
+                showImage(currentIndex - 1,'prev');
 
             }
 
