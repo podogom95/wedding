@@ -41,20 +41,35 @@ body{
     border-radius: 20px;
 }
 
-.grid{
-    columns: 2;
-    column-gap: 10px;
+.grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
 }
 
-.grid img{
+/* 모든 썸네일을 동일한 크기로 */
+.grid img {
     width: 100%;
-    height: auto;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
     display: block;
-    margin-bottom: 10px;
-    border-radius: 10px;
+    border-radius: 8px;
     cursor: pointer;
 
-    break-inside: avoid;
+    user-select: none;
+    -webkit-user-select: none;
+
+    -webkit-touch-callout: none;
+    -webkit-tap-highlight-color: transparent;
+
+    -webkit-user-drag: none;
+    transition: opacity 0.2s ease;
+}
+
+
+/* 터치/마우스 반응 */
+.grid img:hover {
+    opacity: 0.85;
 }
 
 .map-buttons{
