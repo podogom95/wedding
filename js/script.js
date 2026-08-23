@@ -887,21 +887,6 @@ if (musicButton) {
 
 }
 
-
-// --------------------------------------------------
-// 페이지 로딩 후 자동재생 시도
-// --------------------------------------------------
-
-window.addEventListener(
-    'load',
-    () => {
-
-        playMusic();
-
-    }
-);
-
-
 // ==================================================
 // 사용자 상호작용 → 음악 재생
 // ==================================================
@@ -935,43 +920,21 @@ function handleUserInteraction() {
 
 }
 
+// ==================================================
+// 페이지 스크롤 후 BGM 재생
+// ==================================================
 
-// --------------------------------------------------
-// PC 마우스 클릭
-// 모바일 터치
-// 태블릿 터치
-// --------------------------------------------------
+let hasScrolled = false;
 
-document.addEventListener(
-    'pointerdown',
-    handleUserInteraction,
-    {
-        passive: true
+window.addEventListener('scroll', () => {
+
+    // 실제로 페이지가 이동했는지 확인
+    if (window.scrollY > 0 && !hasScrolled) {
+
+        hasScrolled = true;
+
+        playMusic();
+
     }
-);
 
-
-// --------------------------------------------------
-// PC 마우스 휠
-// --------------------------------------------------
-
-document.addEventListener(
-    'wheel',
-    handleUserInteraction,
-    {
-        passive: true
-    }
-);
-
-
-// --------------------------------------------------
-// Android / iPhone 터치 보조
-// --------------------------------------------------
-
-document.addEventListener(
-    'touchstart',
-    handleUserInteraction,
-    {
-        passive: true
-    }
-);
+}, { passive: true });
