@@ -52,5 +52,5 @@ const observer = new IntersectionObserver(
     }
 );
 
-document.querySelectorAll('.fade')
+document.querySelectorAll('.card')
 .forEach(el=>observer.observe(el));
