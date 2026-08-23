@@ -193,13 +193,16 @@
     <button class="gallery-next">›</button>
 </div>
 
-<!--배경음악-->    
-<audio id="bgm" loop>
+<!-- 배경음악 -->
+<audio id="bgm" loop preload="auto">
     <source src="music/wedding.mp3" type="audio/mpeg">
 </audio>
 
-<button id="musicButton" class="music-button">
-    ♫
+<!-- 음악 버튼 -->
+<button id="musicButton"
+        class="music-button"
+        aria-label="배경음악 켜기/끄기">
+    ♪
 </button>
     
 <script src="js/script.js"></script>
