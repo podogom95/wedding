@@ -59,7 +59,7 @@ let galleryOpen = false;
 let touchStartX = 0;
 let touchStartY = 0;
 
-let isSwiping = false;
+let ignoreClick = false;
 
 let savedScrollY = 0;
 
@@ -280,12 +280,8 @@ if (galleryViewer) {
     galleryViewer.addEventListener('click', (e) => {
 
         // 스와이프 직후 발생하는 click 방지
-        if (isSwiping) {
-
-            isSwiping = false;
-
-            return;
-
+         if (ignoreClick) {
+        return;
         }
 
 
@@ -353,7 +349,7 @@ if (galleryViewer) {
             Math.abs(diffX) > Math.abs(diffY)
         ) {
 
-            isSwiping = true;
+            ignoreClick = true;
 
 
             // 왼쪽 스와이프 → 다음 사진
@@ -369,6 +365,11 @@ if (galleryViewer) {
                 showImage(currentIndex - 1,'prev');
 
             }
+
+            // 모바일 브라우저가 만들어내는 click만 무시
+            setTimeout(() => {
+                ignoreClick = false;
+            }, 400);
 
         }
 
