@@ -753,12 +753,8 @@ document.querySelectorAll('.card')
 // 배경음악
 // ==================================================
 
-const bgm =
-    document.getElementById('bgm');
-
-const musicButton =
-    document.getElementById('musicButton');
-
+const bgm = document.getElementById('bgm');
+const musicButton = document.getElementById('musicButton');
 
 let musicPlaying = false;
 
@@ -772,7 +768,6 @@ function updateMusicButton() {
     if (!musicButton) {
         return;
     }
-
 
     if (musicPlaying) {
 
@@ -811,7 +806,6 @@ function playMusic() {
         return;
     }
 
-
     bgm.play()
         .then(() => {
 
@@ -821,13 +815,6 @@ function playMusic() {
 
         })
         .catch(() => {
-
-            /*
-               iPhone / Android에서
-               자동재생이 차단된 경우
-
-               다음 사용자 터치에서 다시 시도
-            */
 
             musicPlaying = false;
 
@@ -848,7 +835,6 @@ function pauseMusic() {
         return;
     }
 
-
     bgm.pause();
 
     musicPlaying = false;
@@ -864,63 +850,49 @@ function pauseMusic() {
 
 if (musicButton) {
 
-    musicButton.addEventListener(
-        'click',
-        (e) => {
+    musicButton.addEventListener('click', (e) => {
 
-            e.stopPropagation();
+        e.stopPropagation();
 
+        if (musicPlaying) {
 
-            if (musicPlaying) {
+            pauseMusic();
 
-                pauseMusic();
+        } else {
 
-            } else {
-
-                playMusic();
-
-            }
+            playMusic();
 
         }
-    );
+
+    });
 
 }
 
 
 // --------------------------------------------------
-// 페이지 진입 시 자동재생 시도
+// 페이지 로딩 후 자동재생 시도
 // --------------------------------------------------
 
-window.addEventListener(
-    'load',
-    () => {
+window.addEventListener('load', () => {
 
-        playMusic();
+    playMusic();
 
-    }
-);
+});
 
 
 // --------------------------------------------------
-// 모바일 자동재생 차단 대응
+// 자동재생이 차단된 경우
 //
-// 첫 번째 사용자 터치에서 재생 시도
+// PC : 마우스 클릭
+// 모바일 : 터치
+// 태블릿 : 터치/펜
+//
+// 첫 사용자 입력에서 음악 재생
 // --------------------------------------------------
-
-let musicFirstInteraction = true;
-
 
 document.addEventListener(
-    'touchstart',
+    'pointerdown',
     () => {
-
-        if (!musicFirstInteraction) {
-            return;
-        }
-
-
-        musicFirstInteraction = false;
-
 
         if (!musicPlaying) {
 
@@ -930,7 +902,7 @@ document.addEventListener(
 
     },
     {
-        passive: true,
-        once: true
+        once: true,
+        passive: true
     }
 );
