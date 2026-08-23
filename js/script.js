@@ -53,6 +53,12 @@ const closeButton = document.querySelector('.gallery-close');
 let currentIndex = 0;
 let galleryOpen = false;
 
+let touchStartX = 0;
+let touchStartY = 0;
+let isSwiping = false;
+
+let savedScrollY = 0;
+
 
 // 갤러리 열기
 function openGallery(index) {
@@ -65,9 +71,20 @@ function openGallery(index) {
 
     galleryOpen = true;
 
-    // 브라우저 뒤로가기용 history 추가
-    history.pushState({ gallery: true }, "");
 
+    // 현재 청첩장의 스크롤 위치 저장
+    savedScrollY = window.scrollY;
+
+    // iOS에서도 배경 스크롤 방지
+    document.body.classList.add('gallery-open');
+
+
+    // 브라우저 history에 갤러리 상태 추가
+    history.pushState(
+        { gallery: true },
+        "",
+        window.location.href
+    );
 }
 
 
@@ -77,8 +94,12 @@ function closeGallery() {
     galleryViewer.classList.remove('active');
 
     galleryOpen = false;
-}
 
+    document.body.classList.remove('gallery-open');
+
+    // 기존 스크롤 위치 복원
+    window.scrollTo(0, savedScrollY);
+}
 
 // 사진 변경
 function showImage(index) {
@@ -128,7 +149,9 @@ nextButton.addEventListener('click', (e) => {
 
 
 // X 버튼
-closeButton.addEventListener('click', () => {
+closeButton.addEventListener('click', (e) => {
+
+    e.stopPropagation();
 
     if (galleryOpen) {
         history.back();
@@ -146,39 +169,78 @@ window.addEventListener('popstate', () => {
 
 });
 
-let touchStartX = 0;
-let touchEndX = 0;
+// =========================
+// 스와이프 시작
+// =========================
 
 galleryViewer.addEventListener('touchstart', (e) => {
 
-    touchStartX = e.changedTouches[0].screenX;
+    if (e.touches.length !== 1) {
+        return;
+    }
+
+    touchStartX = e.touches[0].clientX;
+    touchStartY = e.touches[0].clientY;
+
+    isSwiping = false;
 
 }, { passive: true });
 
 
+// =========================
+// 스와이프 종료
+// =========================
+
 galleryViewer.addEventListener('touchend', (e) => {
 
-    touchEndX = e.changedTouches[0].screenX;
-
-    const difference = touchStartX - touchEndX;
-
-    // 최소 50px 이상 움직였을 때만 스와이프
-    if (Math.abs(difference) < 50) {
+    if (e.changedTouches.length !== 1) {
         return;
     }
 
-    if (difference > 0) {
-        // 왼쪽으로 스와이프 → 다음
-        showImage(currentIndex + 1);
-    } else {
-        // 오른쪽으로 스와이프 → 이전
-        showImage(currentIndex - 1);
+    const touchEndX = e.changedTouches[0].clientX;
+    const touchEndY = e.changedTouches[0].clientY;
+
+    const diffX = touchStartX - touchEndX;
+    const diffY = touchStartY - touchEndY;
+
+
+    // 세로 움직임보다 가로 움직임이 크고
+    // 50px 이상 움직였을 때만 스와이프
+    if (
+        Math.abs(diffX) > 50 &&
+        Math.abs(diffX) > Math.abs(diffY)
+    ) {
+
+        isSwiping = true;
+
+
+        if (diffX > 0) {
+
+            // 왼쪽으로 스와이프
+            showImage(currentIndex + 1);
+
+        } else {
+
+            // 오른쪽으로 스와이프
+            showImage(currentIndex - 1);
+
+        }
+
     }
 
-});
+}, { passive: true });
 
+
+// 바깥 영역 클릭 → 닫기
 galleryViewer.addEventListener('click', (e) => {
 
+    // 스와이프 직후 발생하는 가짜 click 방지
+    if (isSwiping) {
+        isSwiping = false;
+        return;
+    }
+
+    // 실제 배경을 클릭했을 때만 닫기
     if (e.target === galleryViewer) {
 
         if (galleryOpen) {
@@ -188,7 +250,6 @@ galleryViewer.addEventListener('click', (e) => {
     }
 
 });
-
 
 const observer = new IntersectionObserver(
     (entries) => {
