@@ -759,182 +759,237 @@ const musicButton = document.getElementById('musicButton');
 let musicPlaying = false;
 
 
-// --------------------------------------------------
-// 버튼 상태 업데이트
-// --------------------------------------------------
-
+// 음악 상태 업데이트
 function updateMusicButton() {
-
-    if (!musicButton) {
-        return;
-    }
 
     if (musicPlaying) {
 
         musicButton.classList.add('playing');
-        musicButton.textContent = '♪';
-
-        musicButton.setAttribute(
-            'aria-label',
-            '배경음악 끄기'
-        );
 
     } else {
 
         musicButton.classList.remove('playing');
-        musicButton.textContent = '♫';
-
-        musicButton.setAttribute(
-            'aria-label',
-            '배경음악 켜기'
-        );
 
     }
+
 }
 
 
-// --------------------------------------------------
-// 음악 재생
-// --------------------------------------------------
+// 음악 버튼
+musicButton.addEventListener('click', () => {
 
-function playMusic() {
+    if (musicPlaying) {
 
-    if (!bgm) {
-        return;
-    }
+        bgm.pause();
+        musicPlaying = false;
 
+    } else {
 
-    // 오디오가 준비되지 않은 경우
-    if (bgm.readyState === 0) {
-        bgm.load();
-    }
-
-
-    const promise = bgm.play();
-
-
-    if (promise !== undefined) {
-
-        promise
+        bgm.play()
             .then(() => {
 
                 musicPlaying = true;
-
                 updateMusicButton();
 
             })
-            .catch((error) => {
+            .catch(error => {
 
-                console.log(
-                    'BGM 재생 실패:',
-                    error
-                );
-
-                musicPlaying = false;
-
-                updateMusicButton();
+                console.log('음악 재생 실패:', error);
 
             });
 
     }
 
-}
+});
 
 
-// --------------------------------------------------
-// 음악 정지
-// --------------------------------------------------
 
-function pauseMusic() {
+// // ==================================================
+// // 배경음악
+// // ==================================================
 
-    if (!bgm) {
-        return;
-    }
+// const bgm = document.getElementById('bgm');
+// const musicButton = document.getElementById('musicButton');
 
-    bgm.pause();
-
-    musicPlaying = false;
-
-    updateMusicButton();
-
-}
+// let musicPlaying = false;
 
 
-// --------------------------------------------------
-// 음악 버튼
-// --------------------------------------------------
+// // --------------------------------------------------
+// // 버튼 상태 업데이트
+// // --------------------------------------------------
 
-if (musicButton) {
+// function updateMusicButton() {
 
-    musicButton.addEventListener(
-        'click',
-        (e) => {
+//     if (!musicButton) {
+//         return;
+//     }
 
-            e.stopPropagation();
+//     if (musicPlaying) {
 
-            if (musicPlaying) {
+//         musicButton.classList.add('playing');
+//         musicButton.textContent = '♪';
 
-                pauseMusic();
+//         musicButton.setAttribute(
+//             'aria-label',
+//             '배경음악 끄기'
+//         );
 
-            } else {
+//     } else {
 
-                playMusic();
+//         musicButton.classList.remove('playing');
+//         musicButton.textContent = '♫';
 
-            }
+//         musicButton.setAttribute(
+//             'aria-label',
+//             '배경음악 켜기'
+//         );
 
-        }
-    );
-
-}
-
-// ==================================================
-// 사용자 상호작용 → 음악 재생
-// ==================================================
-
-let interactionUsed = false;
-
-
-function handleUserInteraction() {
-
-    if (interactionUsed) {
-        return;
-    }
+//     }
+// }
 
 
-    if (musicPlaying) {
-        interactionUsed = true;
-        return;
-    }
+// // --------------------------------------------------
+// // 음악 재생
+// // --------------------------------------------------
+
+// function playMusic() {
+
+//     if (!bgm) {
+//         return;
+//     }
 
 
-    playMusic();
+//     // 오디오가 준비되지 않은 경우
+//     if (bgm.readyState === 0) {
+//         bgm.load();
+//     }
 
 
-    /*
-       play()가 성공하면 다시 실행할 필요가 없으므로
-       일단 interactionUsed를 바로 true로 만들지 않는다.
+//     const promise = bgm.play();
 
-       Android에서 첫 이벤트가 play() 거부될 경우
-       다음 이벤트에서 다시 시도할 수 있도록 한다.
-    */
 
-}
+//     if (promise !== undefined) {
 
-// ==================================================
-// 페이지 스크롤 후 BGM 재생
-// ==================================================
+//         promise
+//             .then(() => {
 
-let hasScrolled = false;
+//                 musicPlaying = true;
 
-window.addEventListener('scroll', () => {
+//                 updateMusicButton();
 
-    // 실제로 페이지가 이동했는지 확인
-    if (window.scrollY > 0 && !hasScrolled) {
+//             })
+//             .catch((error) => {
 
-        hasScrolled = true;
+//                 console.log(
+//                     'BGM 재생 실패:',
+//                     error
+//                 );
 
-        playMusic();
+//                 musicPlaying = false;
 
-    }
+//                 updateMusicButton();
 
-}, { passive: true });
+//             });
+
+//     }
+
+// }
+
+
+// // --------------------------------------------------
+// // 음악 정지
+// // --------------------------------------------------
+
+// function pauseMusic() {
+
+//     if (!bgm) {
+//         return;
+//     }
+
+//     bgm.pause();
+
+//     musicPlaying = false;
+
+//     updateMusicButton();
+
+// }
+
+
+// // --------------------------------------------------
+// // 음악 버튼
+// // --------------------------------------------------
+
+// if (musicButton) {
+
+//     musicButton.addEventListener(
+//         'click',
+//         (e) => {
+
+//             e.stopPropagation();
+
+//             if (musicPlaying) {
+
+//                 pauseMusic();
+
+//             } else {
+
+//                 playMusic();
+
+//             }
+
+//         }
+//     );
+
+// }
+
+// // ==================================================
+// // 사용자 상호작용 → 음악 재생
+// // ==================================================
+
+// let interactionUsed = false;
+
+
+// function handleUserInteraction() {
+
+//     if (interactionUsed) {
+//         return;
+//     }
+
+
+//     if (musicPlaying) {
+//         interactionUsed = true;
+//         return;
+//     }
+
+
+//     playMusic();
+
+
+//     /*
+//        play()가 성공하면 다시 실행할 필요가 없으므로
+//        일단 interactionUsed를 바로 true로 만들지 않는다.
+
+//        Android에서 첫 이벤트가 play() 거부될 경우
+//        다음 이벤트에서 다시 시도할 수 있도록 한다.
+//     */
+
+// }
+
+// // ==================================================
+// // 페이지 스크롤 후 BGM 재생
+// // ==================================================
+
+// let hasScrolled = false;
+
+// window.addEventListener('scroll', () => {
+
+//     // 실제로 페이지가 이동했는지 확인
+//     if (window.scrollY > 0 && !hasScrolled) {
+
+//         hasScrolled = true;
+
+//         playMusic();
+
+//     }
+
+// }, { passive: true });
