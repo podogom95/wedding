@@ -803,28 +803,6 @@ function pauseMusic() {
 
 }
 
-
-// --------------------------------------------------
-// 음악 버튼
-// --------------------------------------------------
-
-musicButton.addEventListener('click', (e) => {
-
-    e.stopPropagation();
-
-    if (musicPlaying) {
-
-        pauseMusic();
-
-    } else {
-
-        playMusic();
-
-    }
-
-});
-
-
 // ==================================================
 // 첫 화면 터치/클릭 → 음악 시작
 // ==================================================
@@ -958,81 +936,29 @@ if (intro) {
 // }
 
 
-// // --------------------------------------------------
-// // 음악 버튼
-// // --------------------------------------------------
+// --------------------------------------------------
+// 음악 버튼
+// --------------------------------------------------
 
-// if (musicButton) {
+if (musicButton) {
 
-//     musicButton.addEventListener(
-//         'click',
-//         (e) => {
+    musicButton.addEventListener(
+        'click',
+        (e) => {
 
-//             e.stopPropagation();
+            e.stopPropagation();
 
-//             if (musicPlaying) {
+            if (musicPlaying) {
 
-//                 pauseMusic();
+                pauseMusic();
 
-//             } else {
+            } else {
 
-//                 playMusic();
+                playMusic();
 
-//             }
+            }
 
-//         }
-//     );
+        }
+    );
 
-// }
-
-// // ==================================================
-// // 사용자 상호작용 → 음악 재생
-// // ==================================================
-
-// let interactionUsed = false;
-
-
-// function handleUserInteraction() {
-
-//     if (interactionUsed) {
-//         return;
-//     }
-
-
-//     if (musicPlaying) {
-//         interactionUsed = true;
-//         return;
-//     }
-
-
-//     playMusic();
-
-
-//     /*
-//        play()가 성공하면 다시 실행할 필요가 없으므로
-//        일단 interactionUsed를 바로 true로 만들지 않는다.
-
-//        Android에서 첫 이벤트가 play() 거부될 경우
-//        다음 이벤트에서 다시 시도할 수 있도록 한다.
-//     */
-
-// }
-
-// // ==================================================
-// // 페이지 스크롤 후 BGM 재생
-// // ==================================================
-
-// let hasScrolled = false;
-
-// window.addEventListener('scroll', () => {
-
-//     // 실제로 페이지가 이동했는지 확인
-//     if (window.scrollY > 0 && !hasScrolled) {
-
-//         hasScrolled = true;
-
-//         playMusic();
-
-//     }
-
-// }, { passive: true });
+}
