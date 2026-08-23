@@ -759,48 +759,91 @@ const musicButton = document.getElementById('musicButton');
 let musicPlaying = false;
 
 
-// 음악 상태 업데이트
-function updateMusicButton() {
+// --------------------------------------------------
+// 음악 재생
+// --------------------------------------------------
 
-    if (musicPlaying) {
+function playMusic() {
 
-        musicButton.classList.add('playing');
-
-    } else {
-
-        musicButton.classList.remove('playing');
-
+    if (!bgm) {
+        return;
     }
+
+    bgm.play()
+        .then(() => {
+
+            musicPlaying = true;
+
+            musicButton.classList.add('playing');
+
+        })
+        .catch(error => {
+
+            console.log(
+                'BGM 재생 실패:',
+                error
+            );
+
+        });
 
 }
 
 
+// --------------------------------------------------
+// 음악 정지
+// --------------------------------------------------
+
+function pauseMusic() {
+
+    bgm.pause();
+
+    musicPlaying = false;
+
+    musicButton.classList.remove('playing');
+
+}
+
+
+// --------------------------------------------------
 // 음악 버튼
-musicButton.addEventListener('click', () => {
+// --------------------------------------------------
+
+musicButton.addEventListener('click', (e) => {
+
+    e.stopPropagation();
 
     if (musicPlaying) {
 
-        bgm.pause();
-        musicPlaying = false;
+        pauseMusic();
 
     } else {
 
-        bgm.play()
-            .then(() => {
-
-                musicPlaying = true;
-                updateMusicButton();
-
-            })
-            .catch(error => {
-
-                console.log('음악 재생 실패:', error);
-
-            });
+        playMusic();
 
     }
 
 });
+
+
+// ==================================================
+// 첫 화면 터치/클릭 → 음악 시작
+// ==================================================
+
+const intro = document.querySelector('.intro');
+
+if (intro) {
+
+    intro.addEventListener('click', () => {
+
+        if (!musicPlaying) {
+            playMusic();
+        }
+
+    }, {
+        once: true
+    });
+
+}
 
 
 
