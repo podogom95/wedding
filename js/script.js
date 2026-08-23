@@ -23,7 +23,7 @@ function copyText(text){
 
     navigator.clipboard.writeText(text);
 
-    alert('계좌번호가 복사되었습니다.');
+    //alert('계좌번호가 복사되었습니다.');
 }
 
 document.querySelectorAll('.gallery-img')
