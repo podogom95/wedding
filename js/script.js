@@ -753,87 +753,184 @@ document.querySelectorAll('.card')
 // 배경음악
 // ==================================================
 
-const bgm = document.getElementById('bgm');
-const musicButton = document.getElementById('musicButton');
+const bgm =
+    document.getElementById('bgm');
+
+const musicButton =
+    document.getElementById('musicButton');
+
 
 let musicPlaying = false;
 
 
+// --------------------------------------------------
+// 음악 버튼 상태
+// --------------------------------------------------
+
+function updateMusicButton() {
+
+    if (!musicButton) {
+        return;
+    }
+
+
+    if (musicPlaying) {
+
+        musicButton.classList.add('playing');
+
+        musicButton.textContent = '♪';
+
+        musicButton.setAttribute(
+            'aria-label',
+            '배경음악 끄기'
+        );
+
+    } else {
+
+        musicButton.classList.remove('playing');
+
+        musicButton.textContent = '♫';
+
+        musicButton.setAttribute(
+            'aria-label',
+            '배경음악 켜기'
+        );
+
+    }
+
+}
+
+
+// --------------------------------------------------
 // 음악 재생
+// --------------------------------------------------
+
 function playMusic() {
 
     if (!bgm) {
         return;
     }
 
+
     bgm.play()
         .then(() => {
 
             musicPlaying = true;
 
-            musicButton.classList.add('playing');
+            updateMusicButton();
 
         })
         .catch(() => {
 
-            // 브라우저가 자동재생을 막은 경우
+            /*
+               iPhone / Android에서
+               자동재생이 차단된 경우
+
+               다음 사용자 터치에서 다시 시도
+            */
+
             musicPlaying = false;
+
+            updateMusicButton();
 
         });
 
 }
 
 
+// --------------------------------------------------
 // 음악 정지
+// --------------------------------------------------
+
 function pauseMusic() {
 
     if (!bgm) {
         return;
     }
 
+
     bgm.pause();
 
     musicPlaying = false;
 
-    musicButton.classList.remove('playing');
+    updateMusicButton();
 
 }
 
 
+// --------------------------------------------------
 // 음악 버튼
+// --------------------------------------------------
+
 if (musicButton) {
 
-    musicButton.addEventListener('click', (e) => {
+    musicButton.addEventListener(
+        'click',
+        (e) => {
 
-        e.stopPropagation();
+            e.stopPropagation();
 
-        if (musicPlaying) {
 
-            pauseMusic();
+            if (musicPlaying) {
 
-        } else {
+                pauseMusic();
 
-            playMusic();
+            } else {
+
+                playMusic();
+
+            }
 
         }
-
-    });
+    );
 
 }
 
 
-// 첫 번째 사용자 터치에서 음악 시작
+// --------------------------------------------------
+// 페이지 진입 시 자동재생 시도
+// --------------------------------------------------
+
+window.addEventListener(
+    'load',
+    () => {
+
+        playMusic();
+
+    }
+);
+
+
+// --------------------------------------------------
+// 모바일 자동재생 차단 대응
+//
+// 첫 번째 사용자 터치에서 재생 시도
+// --------------------------------------------------
+
+let musicFirstInteraction = true;
+
+
 document.addEventListener(
     'touchstart',
     () => {
 
+        if (!musicFirstInteraction) {
+            return;
+        }
+
+
+        musicFirstInteraction = false;
+
+
         if (!musicPlaying) {
+
             playMusic();
+
         }
 
     },
     {
-        once: true,
-        passive: true
+        passive: true,
+        once: true
     }
 );
