@@ -1,0 +1,64 @@
+body{
+    margin:0;
+    font-family:sans-serif;
+    color:#333;
+    background:#fff;
+}
+
+.hero img{
+    width:100%;
+    display:block;
+}
+
+section{
+    padding:50px 20px;
+    text-align:center;
+}
+
+.grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+}
+
+.grid img{
+    width:100%;
+    cursor:pointer;
+    border-radius:10px;
+}
+
+.map-buttons{
+    display:flex;
+    gap:10px;
+    justify-content:center;
+    flex-wrap:wrap;
+}
+
+.map-buttons a{
+    text-decoration:none;
+    border:1px solid #ccc;
+    padding:10px 20px;
+    color:#333;
+}
+
+.accordion{
+    width:100%;
+    padding:15px;
+    margin-top:10px;
+}
+
+.panel{
+    display:none;
+    padding:10px;
+}
+
+.fade{
+    opacity:0;
+    transform:translateY(30px);
+    transition:1s;
+}
+
+.fade.show{
+    opacity:1;
+    transform:none;
+}
