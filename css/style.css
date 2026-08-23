@@ -214,7 +214,17 @@ body{
         opacity 0.28s ease;
 }
 
+.gallery-img,
+.gallery-image {
+    user-select: none;
+    -webkit-user-select: none;
 
+    -webkit-touch-callout: none;
+    -webkit-tap-highlight-color: transparent;
+
+    -webkit-user-drag: none;
+    user-drag: none;
+}
 /* =========================================
    버튼
    ========================================= */
