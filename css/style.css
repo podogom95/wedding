@@ -297,35 +297,79 @@ body.gallery-open {
 }
 
 
+/* ==================================================
+   배경음악 버튼
+   ================================================== */
+
 .music-button {
     position: fixed;
 
-    right: 20px;
-    bottom: 20px;
+    right: 18px;
+    bottom: 18px;
 
-    z-index: 1000;
+    width: 42px;
+    height: 42px;
 
-    width: 45px;
-    height: 45px;
+    z-index: 10000;
 
-    border: 1px solid rgba(255,255,255,0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 0;
+
+    border: 1px solid rgba(200, 170, 165, 0.35);
     border-radius: 50%;
 
-    background: rgba(255,255,255,0.85);
+    background: rgba(255, 255, 255, 0.88);
 
-    color: #777;
+    color: #c8aaa5;
 
-    font-size: 20px;
+    font-family: serif;
+    font-size: 21px;
 
     cursor: pointer;
 
     -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
 
-    transition: all 0.3s ease;
+    box-shadow:
+        0 2px 10px rgba(0, 0, 0, 0.08);
+
+    transition:
+        opacity 0.3s ease,
+        background 0.3s ease,
+        transform 0.3s ease;
 }
 
-.music-button.playing {
-    color: #c8aaa5;
 
-    transform: rotate(360deg);
+/* 터치했을 때 */
+.music-button:active {
+    transform: scale(0.92);
+}
+
+
+/* 음악 재생 중 */
+.music-button.playing {
+    animation: musicRotate 4s linear infinite;
+}
+
+
+/* 음악 정지 */
+.music-button:not(.playing) {
+    opacity: 0.65;
+}
+
+
+/* 은은한 회전 */
+@keyframes musicRotate {
+
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+
 }
