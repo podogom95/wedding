@@ -43,15 +43,19 @@ body{
 }
 
 .grid{
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:10px;
+    columns: 2;
+    column-gap: 10px;
 }
 
 .grid img{
-    width:100%;
-    cursor:pointer;
-    border-radius:10px;
+    width: 100%;
+    height: auto;
+    display: block;
+    margin-bottom: 10px;
+    border-radius: 10px;
+    cursor: pointer;
+
+    break-inside: avoid;
 }
 
 .map-buttons{
