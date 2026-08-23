@@ -128,7 +128,7 @@ function closeGallery() {
 // 사진 변경
 // --------------------------------------------------
 
-function showImage(index) {
+function showImage(index, direction) {
 
     if (!galleryViewerImg || galleryImages.length === 0) {
         return;
@@ -147,12 +147,61 @@ function showImage(index) {
     }
 
 
-    currentIndex = index;
+    // 기존 사진이 사라지는 방향
+    if (direction === 'next') {
 
-    galleryViewerImg.src = galleryImages[currentIndex].src;
+        galleryViewerImg.classList.add('fade-out-left');
 
+    } else {
+
+        galleryViewerImg.classList.add('fade-out-right');
+
+    }
+
+
+    setTimeout(() => {
+
+        currentIndex = index;
+
+        galleryViewerImg.src = galleryImages[currentIndex].src;
+
+
+        // 기존 애니메이션 클래스 제거
+        galleryViewerImg.classList.remove(
+            'fade-out-left',
+            'fade-out-right'
+        );
+
+
+        // 새 사진의 시작 위치
+        if (direction === 'next') {
+
+            galleryViewerImg.classList.add('fade-in-right');
+
+        } else {
+
+            galleryViewerImg.classList.add('fade-in-left');
+
+        }
+
+
+        // 브라우저가 위치를 적용한 다음
+        // 원래 위치 + opacity 1로 전환
+        requestAnimationFrame(() => {
+
+            requestAnimationFrame(() => {
+
+                galleryViewerImg.classList.remove(
+                    'fade-in-left',
+                    'fade-in-right'
+                );
+
+            });
+
+        });
+
+    }, 250);
 }
-
 
 // --------------------------------------------------
 // 갤러리 사진 클릭
@@ -179,7 +228,7 @@ if (prevButton) {
 
         e.stopPropagation();
 
-        showImage(currentIndex - 1);
+        showImage(currentIndex - 1, 'prev');
 
     });
 
@@ -196,7 +245,7 @@ if (nextButton) {
 
         e.stopPropagation();
 
-        showImage(currentIndex + 1);
+        showImage(currentIndex + 1, 'next');
 
     });
 
