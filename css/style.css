@@ -16,6 +16,7 @@ body{
 }
 
 .card{
+    max-width:600px;
     background:#fff;
     border-radius:20px;
     padding:30px;
