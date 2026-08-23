@@ -1,3 +1,7 @@
+// ==================================================
+// 초기 설정
+// ==================================================
+
 history.scrollRestoration = "manual";
 
 window.addEventListener("load", () => {
@@ -9,18 +13,18 @@ window.addEventListener("load", () => {
 // 계좌번호 아코디언
 // ==================================================
 
-document.querySelectorAll('.accordion')
-.forEach(btn => {
+document.querySelectorAll(".accordion").forEach(button => {
 
-    btn.addEventListener('click', () => {
+    button.addEventListener("click", () => {
 
-        const panel = btn.nextElementSibling;
+        const panel = button.nextElementSibling;
 
-        if (panel.style.display === 'block') {
-            panel.style.display = 'none';
-        } else {
-            panel.style.display = 'block';
-        }
+        if (!panel) return;
+
+        panel.style.display =
+            panel.style.display === "block"
+                ? "none"
+                : "block";
 
     });
 
@@ -33,7 +37,110 @@ document.querySelectorAll('.accordion')
 
 function copyText(text) {
 
-    navigator.clipboard.writeText(text);
+    navigator.clipboard.writeText(text)
+        .then(() => {
+            console.log("계좌번호 복사 완료");
+        })
+        .catch(error => {
+            console.log("계좌번호 복사 실패:", error);
+        });
+
+}
+
+
+// ==================================================
+// 배경음악
+// ==================================================
+
+const bgm = document.getElementById("bgm");
+const musicButton = document.getElementById("musicButton");
+const intro = document.querySelector(".intro");
+
+
+// --------------------------------------------------
+// 음악 재생
+// --------------------------------------------------
+
+function playMusic() {
+
+    if (!bgm) return;
+
+    bgm.play()
+        .then(() => {
+
+            if (musicButton) {
+                musicButton.classList.add("playing");
+            }
+
+            console.log("BGM 재생");
+
+        })
+        .catch(error => {
+
+            console.log("BGM 재생 실패:", error);
+
+        });
+
+}
+
+
+// --------------------------------------------------
+// 음악 정지
+// --------------------------------------------------
+
+function pauseMusic() {
+
+    if (!bgm) return;
+
+    bgm.pause();
+
+    if (musicButton) {
+        musicButton.classList.remove("playing");
+    }
+
+    console.log("BGM 정지");
+
+}
+
+
+// --------------------------------------------------
+// 음악 버튼
+// --------------------------------------------------
+
+if (musicButton && bgm) {
+
+    musicButton.addEventListener("click", event => {
+
+        event.stopPropagation();
+
+        if (bgm.paused) {
+
+            playMusic();
+
+        } else {
+
+            pauseMusic();
+
+        }
+
+    });
+
+}
+
+
+// --------------------------------------------------
+// 첫 화면 클릭 → 음악 시작
+// --------------------------------------------------
+
+if (intro && bgm) {
+
+    intro.addEventListener("click", () => {
+
+        if (bgm.paused) {
+            playMusic();
+        }
+
+    });
 
 }
 
@@ -43,26 +150,26 @@ function copyText(text) {
 // ==================================================
 
 const galleryImages = Array.from(
-    document.querySelectorAll('.gallery-img')
+    document.querySelectorAll(".gallery-img")
 );
 
 const galleryViewer =
-    document.getElementById('galleryViewer');
+    document.getElementById("galleryViewer");
 
 const galleryViewerImg =
-    document.getElementById('galleryViewerImg');
+    document.getElementById("galleryViewerImg");
 
 const galleryViewerImgNext =
-    document.getElementById('galleryViewerImgNext');
+    document.getElementById("galleryViewerImgNext");
 
 const prevButton =
-    document.querySelector('.gallery-prev');
+    document.querySelector(".gallery-prev");
 
 const nextButton =
-    document.querySelector('.gallery-next');
+    document.querySelector(".gallery-next");
 
 const closeButton =
-    document.querySelector('.gallery-close');
+    document.querySelector(".gallery-close");
 
 
 let currentIndex = 0;
@@ -70,16 +177,14 @@ let galleryOpen = false;
 
 let savedScrollY = 0;
 
+let isAnimating = false;
 
-// ==================================================
-// 터치 상태
-// ==================================================
+let isDragging = false;
 
 let touchStartX = 0;
 let touchCurrentX = 0;
 
-let isDragging = false;
-let isAnimating = false;
+let ignoreClick = false;
 
 
 // ==================================================
@@ -88,7 +193,11 @@ let isAnimating = false;
 
 function openGallery(index) {
 
-    if (!galleryViewer || !galleryViewerImg) {
+    if (
+        !galleryViewer ||
+        !galleryViewerImg ||
+        galleryImages.length === 0
+    ) {
         return;
     }
 
@@ -102,26 +211,23 @@ function openGallery(index) {
     galleryViewerImg.style.transform =
         "translateX(0)";
 
-    galleryViewerImg.style.opacity =
-        "1";
+    galleryViewerImg.style.opacity = "1";
 
     galleryViewerImgNext.style.transform =
-        "translateX(100%)";
+        "translateX(0)";
 
-    galleryViewerImgNext.style.opacity =
-        "0";
+    galleryViewerImgNext.style.opacity = "0";
 
-
-    galleryViewer.classList.add('active');
+    galleryViewer.classList.add("active");
 
     galleryOpen = true;
 
-
     savedScrollY = window.scrollY;
 
-    document.body.classList.add('gallery-open');
+    document.body.classList.add("gallery-open");
 
 
+    // Android / iPhone 뒤로가기 처리
     history.pushState(
         { gallery: true },
         "",
@@ -137,18 +243,13 @@ function openGallery(index) {
 
 function closeGallery() {
 
-    if (!galleryViewer) {
-        return;
-    }
+    if (!galleryViewer) return;
 
-    galleryViewer.classList.remove('active');
+    galleryViewer.classList.remove("active");
 
     galleryOpen = false;
 
-    isDragging = false;
-    isAnimating = false;
-
-    document.body.classList.remove('gallery-open');
+    document.body.classList.remove("gallery-open");
 
     window.scrollTo(0, savedScrollY);
 
@@ -161,19 +262,23 @@ function closeGallery() {
 
 function showImage(index, direction) {
 
-    if (isAnimating) {
+    if (
+        isAnimating ||
+        galleryImages.length === 0 ||
+        !galleryViewerImg ||
+        !galleryViewerImgNext
+    ) {
         return;
     }
 
-    if (galleryImages.length === 0) {
-        return;
-    }
 
-
+    // 마지막 → 첫 번째
     if (index >= galleryImages.length) {
         index = 0;
     }
 
+
+    // 첫 번째 → 마지막
     if (index < 0) {
         index = galleryImages.length - 1;
     }
@@ -186,25 +291,31 @@ function showImage(index, direction) {
         galleryViewer.offsetWidth;
 
 
-    // ----------------------------------------------
     // 다음 사진 준비
-    // ----------------------------------------------
-
     galleryViewerImgNext.src =
         galleryImages[index].src;
 
 
-    galleryViewerImgNext.style.opacity =
-        "1";
+    galleryViewerImg.classList.add("animating");
+    galleryViewerImgNext.classList.add("animating");
 
 
-    // 다음 사진 시작 위치
+    // --------------------------------------------------
+    // 다음 사진
+    // --------------------------------------------------
+
     if (direction === "next") {
 
         galleryViewerImgNext.style.transform =
             `translateX(${width}px)`;
 
-    } else {
+    }
+
+    // --------------------------------------------------
+    // 이전 사진
+    // --------------------------------------------------
+
+    else {
 
         galleryViewerImgNext.style.transform =
             `translateX(-${width}px)`;
@@ -212,14 +323,10 @@ function showImage(index, direction) {
     }
 
 
-    galleryViewerImg.classList.add('animating');
-    galleryViewerImgNext.classList.add('animating');
+    galleryViewerImgNext.style.opacity = "1";
 
 
-    // ----------------------------------------------
-    // 이동 시작
-    // ----------------------------------------------
-
+    // 브라우저가 위치를 인식한 후 애니메이션 시작
     requestAnimationFrame(() => {
 
         requestAnimationFrame(() => {
@@ -236,28 +343,17 @@ function showImage(index, direction) {
 
             }
 
+            galleryViewerImg.style.opacity = "0";
 
-            // 현재 사진 페이드아웃
-            galleryViewerImg.style.opacity =
-                "0.15";
-
-
-            // 새 사진 페이드인
             galleryViewerImgNext.style.transform =
                 "translateX(0)";
-
-            galleryViewerImgNext.style.opacity =
-                "1";
 
         });
 
     });
 
 
-    // ----------------------------------------------
-    // 애니메이션 종료
-    // ----------------------------------------------
-
+    // CSS transition 시간과 맞춤
     setTimeout(() => {
 
         currentIndex = index;
@@ -275,35 +371,30 @@ function showImage(index, direction) {
 
 
         galleryViewerImgNext.style.transform =
-            "translateX(100%)";
+            "translateX(0)";
 
         galleryViewerImgNext.style.opacity =
             "0";
 
 
-        galleryViewerImg.classList.remove(
-            'animating'
-        );
-
-        galleryViewerImgNext.classList.remove(
-            'animating'
-        );
+        galleryViewerImg.classList.remove("animating");
+        galleryViewerImgNext.classList.remove("animating");
 
 
         isAnimating = false;
 
-    }, 300);
+    }, 650);
 
 }
 
 
 // ==================================================
-// 갤러리 사진 클릭
+// 갤러리 썸네일 클릭
 // ==================================================
 
-galleryImages.forEach((img, index) => {
+galleryImages.forEach((image, index) => {
 
-    img.addEventListener('click', () => {
+    image.addEventListener("click", () => {
 
         openGallery(index);
 
@@ -318,13 +409,9 @@ galleryImages.forEach((img, index) => {
 
 if (prevButton) {
 
-    prevButton.addEventListener('click', (e) => {
+    prevButton.addEventListener("click", event => {
 
-        e.stopPropagation();
-
-        if (!galleryOpen || isAnimating) {
-            return;
-        }
+        event.stopPropagation();
 
         showImage(
             currentIndex - 1,
@@ -342,13 +429,9 @@ if (prevButton) {
 
 if (nextButton) {
 
-    nextButton.addEventListener('click', (e) => {
+    nextButton.addEventListener("click", event => {
 
-        e.stopPropagation();
-
-        if (!galleryOpen || isAnimating) {
-            return;
-        }
+        event.stopPropagation();
 
         showImage(
             currentIndex + 1,
@@ -366,13 +449,37 @@ if (nextButton) {
 
 if (closeButton) {
 
-    closeButton.addEventListener('click', (e) => {
+    closeButton.addEventListener("click", event => {
 
-        e.stopPropagation();
+        event.stopPropagation();
 
         if (galleryOpen) {
-
             history.back();
+        }
+
+    });
+
+}
+
+
+// ==================================================
+// 갤러리 바깥 영역 클릭 → 닫기
+// ==================================================
+
+if (galleryViewer) {
+
+    galleryViewer.addEventListener("click", event => {
+
+        if (ignoreClick) {
+            return;
+        }
+
+
+        if (event.target === galleryViewer) {
+
+            if (galleryOpen) {
+                history.back();
+            }
 
         }
 
@@ -382,322 +489,251 @@ if (closeButton) {
 
 
 // ==================================================
-// 배경 클릭 → 닫기
-// ==================================================
-
-galleryViewer.addEventListener('click', (e) => {
-
-    /*
-       사진이나 버튼이 아니라
-       진짜 검은 배경을 클릭했을 때만 닫음
-    */
-
-    if (e.target === galleryViewer) {
-
-        if (galleryOpen) {
-
-            history.back();
-
-        }
-
-    }
-
-});
-
-
-// ==================================================
 // 터치 시작
 // ==================================================
 
-galleryViewer.addEventListener(
-    'touchstart',
-    (e) => {
+if (galleryViewer) {
 
-        /*
-           X / 이전 / 다음 버튼을 터치한 경우
-           스와이프 로직을 실행하지 않음
-        */
+    galleryViewer.addEventListener(
+        "touchstart",
+        event => {
 
-        if (
-            e.target.closest('.gallery-close') ||
-            e.target.closest('.gallery-prev') ||
-            e.target.closest('.gallery-next')
-        ) {
+            if (isAnimating) {
+                return;
+            }
 
-            return;
-
-        }
+            if (event.touches.length !== 1) {
+                return;
+            }
 
 
-        if (isAnimating) {
-            return;
-        }
+            touchStartX =
+                event.touches[0].clientX;
+
+            touchCurrentX =
+                touchStartX;
+
+            isDragging = true;
 
 
-        if (e.touches.length !== 1) {
-            return;
-        }
+            galleryViewerImg.classList.remove(
+                "animating"
+            );
 
+            galleryViewerImgNext.classList.remove(
+                "animating"
+            );
 
-        touchStartX =
-            e.touches[0].clientX;
+        },
+        { passive: true }
+    );
 
-        touchCurrentX =
-            touchStartX;
-
-
-        isDragging = true;
-
-
-        // 애니메이션 제거
-        galleryViewerImg.classList.remove(
-            'animating'
-        );
-
-        galleryViewerImgNext.classList.remove(
-            'animating'
-        );
-
-    },
-    { passive: true }
-);
+}
 
 
 // ==================================================
 // 터치 이동
 // ==================================================
 
-galleryViewer.addEventListener(
-    'touchmove',
-    (e) => {
+if (galleryViewer) {
 
-        if (!isDragging || isAnimating) {
-            return;
-        }
+    galleryViewer.addEventListener(
+        "touchmove",
+        event => {
 
-
-        if (e.touches.length !== 1) {
-            return;
-        }
-
-
-        touchCurrentX =
-            e.touches[0].clientX;
+            if (
+                !isDragging ||
+                isAnimating ||
+                event.touches.length !== 1
+            ) {
+                return;
+            }
 
 
-        const diff =
-            touchCurrentX - touchStartX;
+            touchCurrentX =
+                event.touches[0].clientX;
 
 
-        const width =
-            galleryViewer.offsetWidth;
+            const diff =
+                touchCurrentX - touchStartX;
 
 
-        /*
-           이동 범위 제한
-        */
-
-        const limitedDiff =
-            Math.max(
-                -width,
-                Math.min(width, diff)
-            );
+            const width =
+                galleryViewer.offsetWidth;
 
 
-        /*
-           현재 사진 이동
-        */
-
-        galleryViewerImg.style.transform =
-            `translateX(${limitedDiff}px)`;
-
-
-        /*
-           이동량에 따라 페이드
-
-           중앙 = 1
-           화면 절반 이동 = 약 0.5
-           화면 끝 = 0
-        */
-
-        const progress =
-            Math.min(
-                Math.abs(limitedDiff) / width,
-                1
-            );
+            const limitedDiff =
+                Math.max(
+                    -width * 0.8,
+                    Math.min(
+                        width * 0.8,
+                        diff
+                    )
+                );
 
 
-        const currentOpacity =
-            1 - progress * 0.35;
+            // 현재 사진 이동
+            galleryViewerImg.style.transform =
+                `translateX(${limitedDiff}px)`;
 
 
-        galleryViewerImg.style.opacity =
-            currentOpacity;
+            // --------------------------------------------------
+            // 왼쪽으로 스와이프
+            // --------------------------------------------------
+
+            if (limitedDiff < 0) {
+
+                const nextIndex =
+                    (currentIndex + 1) %
+                    galleryImages.length;
 
 
-        /*
-           왼쪽 스와이프
-           → 다음 사진
-        */
-
-        if (limitedDiff < 0) {
-
-            const nextIndex =
-                (currentIndex + 1) %
-                galleryImages.length;
+                galleryViewerImgNext.src =
+                    galleryImages[nextIndex].src;
 
 
-            galleryViewerImgNext.src =
-                galleryImages[nextIndex].src;
+                galleryViewerImgNext.style.transform =
+                    `translateX(${width + limitedDiff}px)`;
+
+            }
 
 
-            galleryViewerImgNext.style.transform =
-                `translateX(${width + limitedDiff}px)`;
+            // --------------------------------------------------
+            // 오른쪽으로 스와이프
+            // --------------------------------------------------
+
+            else {
+
+                const prevIndex =
+                    (
+                        currentIndex -
+                        1 +
+                        galleryImages.length
+                    ) %
+                    galleryImages.length;
 
 
-            /*
-               다음 사진도 조금씩 나타남
-            */
-
-            galleryViewerImgNext.style.opacity =
-                progress;
-
-        }
+                galleryViewerImgNext.src =
+                    galleryImages[prevIndex].src;
 
 
-        /*
-           오른쪽 스와이프
-           → 이전 사진
-        */
+                galleryViewerImgNext.style.transform =
+                    `translateX(${-width + limitedDiff}px)`;
 
-        else if (limitedDiff > 0) {
+            }
 
-            const prevIndex =
-                (currentIndex - 1 +
-                galleryImages.length) %
-                galleryImages.length;
+        },
+        { passive: true }
+    );
 
-
-            galleryViewerImgNext.src =
-                galleryImages[prevIndex].src;
-
-
-            galleryViewerImgNext.style.transform =
-                `translateX(${-width + limitedDiff}px)`;
-
-
-            galleryViewerImgNext.style.opacity =
-                progress;
-
-        }
-
-    },
-    { passive: true }
-);
+}
 
 
 // ==================================================
 // 터치 종료
 // ==================================================
 
-galleryViewer.addEventListener(
-    'touchend',
-    () => {
+if (galleryViewer) {
 
-        if (!isDragging || isAnimating) {
-            return;
-        }
+    galleryViewer.addEventListener(
+        "touchend",
+        () => {
 
-
-        isDragging = false;
-
-
-        const diff =
-            touchCurrentX - touchStartX;
+            if (!isDragging || isAnimating) {
+                return;
+            }
 
 
-        const width =
-            galleryViewer.offsetWidth;
+            isDragging = false;
 
 
-        const threshold = 80;
+            const diff =
+                touchCurrentX - touchStartX;
 
 
-        // ==========================================
-        // 충분히 밀었음
-        // ==========================================
-
-        if (Math.abs(diff) > threshold) {
+            const threshold = 80;
 
 
-            if (diff < 0) {
+            // --------------------------------------------------
+            // 실제 스와이프
+            // --------------------------------------------------
 
-                // 왼쪽 → 다음
+            if (Math.abs(diff) > threshold) {
 
-                showImage(
-                    currentIndex + 1,
-                    "next"
+                ignoreClick = true;
+
+
+                if (diff < 0) {
+
+                    showImage(
+                        currentIndex + 1,
+                        "next"
+                    );
+
+                } else {
+
+                    showImage(
+                        currentIndex - 1,
+                        "prev"
+                    );
+
+                }
+
+
+                // 스와이프 직후 발생하는 click 방지
+                setTimeout(() => {
+
+                    ignoreClick = false;
+
+                }, 700);
+
+            }
+
+
+            // --------------------------------------------------
+            // 짧은 터치 → 원래 위치
+            // --------------------------------------------------
+
+            else {
+
+                galleryViewerImg.classList.add(
+                    "animating"
                 );
 
-            } else {
-
-                // 오른쪽 → 이전
-
-                showImage(
-                    currentIndex - 1,
-                    "prev"
+                galleryViewerImgNext.classList.add(
+                    "animating"
                 );
+
+
+                galleryViewerImg.style.transform =
+                    "translateX(0)";
+
+
+                galleryViewerImgNext.style.transform =
+                    "translateX(0)";
+
+                galleryViewerImgNext.style.opacity =
+                    "0";
+
+
+                setTimeout(() => {
+
+                    galleryViewerImg.classList.remove(
+                        "animating"
+                    );
+
+                    galleryViewerImgNext.classList.remove(
+                        "animating"
+                    );
+
+                }, 650);
 
             }
 
         }
+    );
 
-
-        // ==========================================
-        // 충분히 밀지 못함 → 원위치
-        // ==========================================
-
-        else {
-
-            galleryViewerImg.classList.add(
-                'animating'
-            );
-
-            galleryViewerImgNext.classList.add(
-                'animating'
-            );
-
-
-            galleryViewerImg.style.transform =
-                "translateX(0)";
-
-            galleryViewerImg.style.opacity =
-                "1";
-
-
-            galleryViewerImgNext.style.transform =
-                "translateX(100%)";
-
-            galleryViewerImgNext.style.opacity =
-                "0";
-
-
-            setTimeout(() => {
-
-                galleryViewerImg.classList.remove(
-                    'animating'
-                );
-
-                galleryViewerImgNext.classList.remove(
-                    'animating'
-                );
-
-            }, 280);
-
-        }
-
-    }
-);
+}
 
 
 // ==================================================
@@ -706,7 +742,7 @@ galleryViewer.addEventListener(
 // iPhone Safari 뒤로가기 제스처
 // ==================================================
 
-window.addEventListener('popstate', () => {
+window.addEventListener("popstate", () => {
 
     if (galleryOpen) {
 
@@ -718,246 +754,37 @@ window.addEventListener('popstate', () => {
 
 
 // ==================================================
-// 카드 스크롤 애니메이션
+// 카드 등장 애니메이션
 // ==================================================
 
-const observer = new IntersectionObserver(
-    (entries) => {
+const observer =
+    new IntersectionObserver(
+        entries => {
 
-        entries.forEach((entry) => {
+            entries.forEach(entry => {
 
-            if (entry.isIntersecting) {
+                if (entry.isIntersecting) {
 
-                entry.target.classList.add('show');
+                    entry.target.classList.add("show");
 
-            } else {
+                } else {
 
-                entry.target.classList.remove('show');
+                    entry.target.classList.remove("show");
 
-            }
+                }
 
-        });
+            });
 
-    },
-    {
-        threshold: 0
-    }
-);
-
-
-document.querySelectorAll('.card')
-.forEach(el => observer.observe(el));
-
-
-// ==================================================
-// 배경음악
-// ==================================================
-
-const bgm = document.getElementById('bgm');
-const musicButton = document.getElementById('musicButton');
-
-let musicPlaying = false;
-
-
-// --------------------------------------------------
-// 음악 재생
-// --------------------------------------------------
-
-function playMusic() {
-
-    if (!bgm) {
-        return;
-    }
-
-    bgm.play()
-        .then(() => {
-
-            musicPlaying = true;
-
-            musicButton.classList.add('playing');
-
-        })
-        .catch(error => {
-
-            console.log(
-                'BGM 재생 실패:',
-                error
-            );
-
-        });
-
-}
-
-
-// --------------------------------------------------
-// 음악 정지
-// --------------------------------------------------
-
-function pauseMusic() {
-
-    bgm.pause();
-
-    musicPlaying = false;
-
-    musicButton.classList.remove('playing');
-
-}
-
-// --------------------------------------------------
-// 첫 화면 클릭 → BGM 시작
-// --------------------------------------------------
-
-const intro = document.querySelector('.intro');
-
-if (intro) {
-
-    intro.addEventListener('click', () => {
-
-        if (bgm.paused) {
-
-            playMusic();
-
-        }
-
-    });
-
-}
-
-
-// // ==================================================
-// // 배경음악
-// // ==================================================
-
-// const bgm = document.getElementById('bgm');
-// const musicButton = document.getElementById('musicButton');
-
-// let musicPlaying = false;
-
-
-// // --------------------------------------------------
-// // 버튼 상태 업데이트
-// // --------------------------------------------------
-
-// function updateMusicButton() {
-
-//     if (!musicButton) {
-//         return;
-//     }
-
-//     if (musicPlaying) {
-
-//         musicButton.classList.add('playing');
-//         musicButton.textContent = '♪';
-
-//         musicButton.setAttribute(
-//             'aria-label',
-//             '배경음악 끄기'
-//         );
-
-//     } else {
-
-//         musicButton.classList.remove('playing');
-//         musicButton.textContent = '♫';
-
-//         musicButton.setAttribute(
-//             'aria-label',
-//             '배경음악 켜기'
-//         );
-
-//     }
-// }
-
-
-// // --------------------------------------------------
-// // 음악 재생
-// // --------------------------------------------------
-
-// function playMusic() {
-
-//     if (!bgm) {
-//         return;
-//     }
-
-
-//     // 오디오가 준비되지 않은 경우
-//     if (bgm.readyState === 0) {
-//         bgm.load();
-//     }
-
-
-//     const promise = bgm.play();
-
-
-//     if (promise !== undefined) {
-
-//         promise
-//             .then(() => {
-
-//                 musicPlaying = true;
-
-//                 updateMusicButton();
-
-//             })
-//             .catch((error) => {
-
-//                 console.log(
-//                     'BGM 재생 실패:',
-//                     error
-//                 );
-
-//                 musicPlaying = false;
-
-//                 updateMusicButton();
-
-//             });
-
-//     }
-
-// }
-
-
-// // --------------------------------------------------
-// // 음악 정지
-// // --------------------------------------------------
-
-// function pauseMusic() {
-
-//     if (!bgm) {
-//         return;
-//     }
-
-//     bgm.pause();
-
-//     musicPlaying = false;
-
-//     updateMusicButton();
-
-// }
-
-
-// --------------------------------------------------
-// 음악 버튼
-// --------------------------------------------------
-
-if (musicButton) {
-
-    musicButton.addEventListener(
-        'click',
-        (e) => {
-
-            e.stopPropagation();
-
-            if (musicPlaying) {
-
-                pauseMusic();
-
-            } else {
-
-                playMusic();
-
-            }
-
+        },
+        {
+            threshold: 0
         }
     );
 
-}
+
+document.querySelectorAll(".card")
+    .forEach(element => {
+
+        observer.observe(element);
+
+    });
