@@ -210,8 +210,8 @@ body{
 /* 손을 놓았을 때 사용하는 부드러운 애니메이션 */
 .gallery-image.animating {
     transition:
-        transform 0.28s cubic-bezier(0.22, 1, 0.36, 1),
-        opacity 0.28s ease;
+        transform 0.65s cubic-bezier(0.25, 0.8, 0.25, 1),
+        opacity 0.5s ease;
 }
 
 .gallery-img,
