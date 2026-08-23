@@ -3,9 +3,141 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Wedding</title>
+    <title>모바일 청첩장</title>
+
+    <link rel="stylesheet" href="css/style.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/basiclightbox@5/dist/basicLightbox.min.js"></script>
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/basiclightbox@5/dist/basicLightbox.min.css">
 </head>
+
 <body>
-    <h1>우리의 결혼식</h1>
+
+<section class="hero">
+    <img src="images/cover.jpg" alt="">
+</section>
+
+<section class="intro fade">
+
+    <!-- 수정 ① -->
+    <h1>홍길동 ♥ 김영희</h1>
+
+    <!-- 수정 ② -->
+    <p>2027년 4월 24일 토요일 오후 2시</p>
+
+    <!-- 수정 ③ -->
+    <p>
+        서울 웨딩홀 3층 그랜드홀
+    </p>
+
+</section>
+
+<section class="message fade">
+    <h2>초대합니다</h2>
+
+    <!-- 수정 ④ -->
+    <p>
+        서로 다른 길을 걸어온 두 사람이
+        이제 같은 길을 함께 걸어가려 합니다.
+        소중한 분들을 모시고
+        새로운 출발을 함께하고자 합니다.
+    </p>
+
+</section>
+
+<section class="gallery fade">
+
+    <h2>Gallery</h2>
+
+    <div class="grid">
+
+        <img src="images/gallery01.jpg" class="gallery-img">
+        <img src="images/gallery02.jpg" class="gallery-img">
+        <img src="images/gallery03.jpg" class="gallery-img">
+        <img src="images/gallery04.jpg" class="gallery-img">
+        <img src="images/gallery05.jpg" class="gallery-img">
+        <img src="images/gallery06.jpg" class="gallery-img">
+
+    </div>
+
+</section>
+
+<section class="location fade">
+
+    <h2>오시는 길</h2>
+
+    <p>
+        서울특별시 강남구 예식로 123
+    </p>
+
+    <div class="map-buttons">
+
+        <a href="#">카카오맵</a>
+        <a href="#">네이버지도</a>
+        <a href="#">티맵</a>
+
+    </div>
+
+</section>
+
+<section class="account fade">
+
+    <h2>마음 전하실 곳</h2>
+
+    <button class="accordion">
+        신랑측
+    </button>
+
+    <div class="panel">
+
+        <!-- 수정 ⑤ -->
+
+        <p>
+            홍길동 아버지
+            국민은행 123456789012
+            <button onclick="copyText('123456789012')">
+                복사
+            </button>
+        </p>
+
+        <p>
+            홍길동 어머니
+            신한은행 111122223333
+            <button onclick="copyText('111122223333')">
+                복사
+            </button>
+        </p>
+
+    </div>
+
+    <button class="accordion">
+        신부측
+    </button>
+
+    <div class="panel">
+
+        <p>
+            김영희 아버지
+            농협 999988887777
+            <button onclick="copyText('999988887777')">
+                복사
+            </button>
+        </p>
+
+        <p>
+            김영희 어머니
+            우리은행 444455556666
+            <button onclick="copyText('444455556666')">
+                복사
+            </button>
+        </p>
+
+    </div>
+
+</section>
+
+<script src="js/script.js"></script>
+
 </body>
 </html>
