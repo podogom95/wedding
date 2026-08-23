@@ -15,6 +15,14 @@ body{
         0 10px 30px rgba(0,0,0,0.08);
 }
 
+.card{
+    background:#fff;
+    border-radius:20px;
+    padding:30px;
+    margin:20px;
+    box-shadow:0 5px 15px rgba(0,0,0,.08);
+}
+
 .hero img{
     width:100%;
     display:block;
