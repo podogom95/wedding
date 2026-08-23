@@ -890,32 +890,30 @@ window.addEventListener('load', () => {
 // 첫 사용자 입력에서 음악 재생
 // --------------------------------------------------
 
+function startMusicOnInteraction() {
+
+    if (!musicPlaying) {
+        playMusic();
+    }
+
+}
+
+
+// PC 클릭 / 모바일 터치
 document.addEventListener(
     'pointerdown',
-    () => {
-
-        if (!musicPlaying) {
-
-            playMusic();
-
-        }
-
-    },
+    startMusicOnInteraction,
     {
         once: true,
         passive: true
     }
 );
 
+
+// PC 마우스 휠
 document.addEventListener(
     'wheel',
-    () => {
-
-        if (!musicPlaying) {
-            playMusic();
-        }
-
-    },
+    startMusicOnInteraction,
     {
         once: true,
         passive: true
