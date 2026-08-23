@@ -59,16 +59,27 @@ body{
 
 .map-buttons{
     display:flex;
-    gap:10px;
+    gap:8px;
     justify-content:center;
     flex-wrap:wrap;
+    margin-top: 25px;
 }
 
 .map-buttons a{
-    text-decoration:none;
-    border:1px solid #ccc;
-    padding:10px 20px;
-    color:#333;
+    flex: 1;
+    min-width: 90px;
+
+    padding: 12px 10px;
+
+    border: 1px solid #ddd;
+    border-radius: 10px;
+
+    background: #fff;
+    color: #333;
+
+    text-decoration: none;
+    text-align: center;
+    font-size: 14px;
 }
 
 .accordion{
