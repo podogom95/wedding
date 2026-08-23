@@ -42,6 +42,9 @@ const observer = new IntersectionObserver(
 
                 entry.target.classList.add('show');
 
+            } else {
+                // 화면에서 벗어나면 페이드 아웃
+                entry.target.classList.remove('show');
             }
 
         });
