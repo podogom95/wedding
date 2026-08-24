@@ -201,9 +201,81 @@ let isAnimating = false;
 let isDragging = false;
 
 let touchStartX = 0;
+let touchStartY = 0;
+
 let touchCurrentX = 0;
+let touchCurrentY = 0;
 
 let ignoreClick = false;
+
+
+// ==================================================
+// 확대 / 축소
+// ==================================================
+
+let scale = 1;
+
+const MIN_SCALE = 1;
+const MAX_SCALE = 3;
+
+let translateX = 0;
+let translateY = 0;
+
+
+// 핀치 시작 시점
+let pinchStartDistance = 0;
+let pinchStartScale = 1;
+
+// 확대 상태에서 한 손가락 이동 시작 위치
+let panStartX = 0;
+let panStartY = 0;
+
+let panStartTranslateX = 0;
+let panStartTranslateY = 0;
+
+
+// ==================================================
+// 이미지 transform 적용
+// ==================================================
+
+function updateImageTransform() {
+
+    if (!galleryViewerImg) return;
+
+    galleryViewerImg.style.transform =
+        `translate(${translateX}px, ${translateY}px) scale(${scale})`;
+
+}
+
+
+// ==================================================
+// 확대 상태 초기화
+// ==================================================
+
+function resetZoom() {
+
+    scale = 1;
+
+    translateX = 0;
+    translateY = 0;
+
+    pinchStartDistance = 0;
+    pinchStartScale = 1;
+
+    panStartX = 0;
+    panStartY = 0;
+
+    panStartTranslateX = 0;
+    panStartTranslateY = 0;
+
+    if (galleryViewerImg) {
+
+        galleryViewerImg.style.transform =
+            "translate(0, 0) scale(1)";
+
+    }
+
+}
 
 
 // ==================================================
@@ -227,8 +299,7 @@ function openGallery(index) {
 
     galleryViewerImgNext.src = "";
 
-    galleryViewerImg.style.transform =
-        "translateX(0)";
+    resetZoom();
 
     galleryViewerImg.style.opacity = "1";
 
@@ -332,6 +403,8 @@ function showImage(index, direction) {
 
 
     isAnimating = true;
+
+    resetZoom();
 
 
     const width =
@@ -539,6 +612,44 @@ if (galleryViewer) {
 
 
 // ==================================================
+// 두 손가락 거리 계산
+// ==================================================
+
+function getTouchDistance(touch1, touch2) {
+
+    const dx =
+        touch2.clientX - touch1.clientX;
+
+    const dy =
+        touch2.clientY - touch1.clientY;
+
+    return Math.sqrt(
+        dx * dx + dy * dy
+    );
+
+}
+
+
+// ==================================================
+// 두 손가락 거리 계산
+// ==================================================
+
+function getTouchDistance(touch1, touch2) {
+
+    const dx =
+        touch2.clientX - touch1.clientX;
+
+    const dy =
+        touch2.clientY - touch1.clientY;
+
+    return Math.sqrt(
+        dx * dx + dy * dy
+    );
+
+}
+
+
+// ==================================================
 // 터치 시작
 // ==================================================
 
@@ -552,6 +663,39 @@ if (galleryViewer) {
                 return;
             }
 
+
+            // ------------------------------------------
+            // 두 손가락 → 핀치 시작
+            // ------------------------------------------
+
+            if (event.touches.length === 2) {
+
+                isDragging = false;
+
+                pinchStartDistance =
+                    getTouchDistance(
+                        event.touches[0],
+                        event.touches[1]
+                    );
+
+                pinchStartScale = scale;
+
+                galleryViewerImg.classList.remove(
+                    "animating"
+                );
+
+                galleryViewerImgNext.classList.remove(
+                    "animating"
+                );
+
+                return;
+            }
+
+
+            // ------------------------------------------
+            // 한 손가락
+            // ------------------------------------------
+
             if (event.touches.length !== 1) {
                 return;
             }
@@ -560,10 +704,38 @@ if (galleryViewer) {
             touchStartX =
                 event.touches[0].clientX;
 
+            touchStartY =
+                event.touches[0].clientY;
+
             touchCurrentX =
                 touchStartX;
 
+            touchCurrentY =
+                touchStartY;
+
+
             isDragging = true;
+
+
+            // ------------------------------------------
+            // 확대 상태
+            // ------------------------------------------
+
+            if (scale > 1) {
+
+                panStartX =
+                    event.touches[0].clientX;
+
+                panStartY =
+                    event.touches[0].clientY;
+
+                panStartTranslateX =
+                    translateX;
+
+                panStartTranslateY =
+                    translateY;
+
+            }
 
 
             galleryViewerImg.classList.remove(
@@ -575,7 +747,9 @@ if (galleryViewer) {
             );
 
         },
-        { passive: true }
+        {
+            passive: true
+        }
     );
 
 }
@@ -591,9 +765,60 @@ if (galleryViewer) {
         "touchmove",
         event => {
 
+            if (isAnimating) {
+                return;
+            }
+
+
+            // ==================================================
+            // 핀치 줌
+            // ==================================================
+
+            if (event.touches.length === 2) {
+
+                if (!pinchStartDistance) {
+                    return;
+                }
+
+
+                const currentDistance =
+                    getTouchDistance(
+                        event.touches[0],
+                        event.touches[1]
+                    );
+
+
+                const ratio =
+                    currentDistance /
+                    pinchStartDistance;
+
+
+                scale =
+                    pinchStartScale * ratio;
+
+
+                scale =
+                    Math.max(
+                        MIN_SCALE,
+                        Math.min(
+                            MAX_SCALE,
+                            scale
+                        )
+                    );
+
+
+                updateImageTransform();
+
+                return;
+            }
+
+
+            // ==================================================
+            // 한 손가락
+            // ==================================================
+
             if (
                 !isDragging ||
-                isAnimating ||
                 event.touches.length !== 1
             ) {
                 return;
@@ -603,9 +828,45 @@ if (galleryViewer) {
             touchCurrentX =
                 event.touches[0].clientX;
 
+            touchCurrentY =
+                event.touches[0].clientY;
+
+
+            // ==================================================
+            // 확대 상태 → 이미지 이동
+            // ==================================================
+
+            if (scale > 1) {
+
+                const moveX =
+                    event.touches[0].clientX -
+                    panStartX;
+
+                const moveY =
+                    event.touches[0].clientY -
+                    panStartY;
+
+
+                translateX =
+                    panStartTranslateX + moveX;
+
+                translateY =
+                    panStartTranslateY + moveY;
+
+
+                updateImageTransform();
+
+                return;
+            }
+
+
+            // ==================================================
+            // 기본 상태 → 기존 좌우 스와이프
+            // ==================================================
 
             const diff =
-                touchCurrentX - touchStartX;
+                touchCurrentX -
+                touchStartX;
 
 
             const width =
@@ -640,10 +901,12 @@ if (galleryViewer) {
 
                 if (
                     galleryViewerImgNext.src !==
-                        galleryImages[nextIndex].dataset.full
+                    galleryImages[nextIndex].dataset.full
                 ) {
+
                     galleryViewerImgNext.src =
                         galleryImages[nextIndex].dataset.full;
+
                 }
 
 
@@ -668,12 +931,14 @@ if (galleryViewer) {
                     galleryImages.length;
 
 
-                if (                
+                if (
                     galleryViewerImgNext.src !==
-                        galleryImages[prevIndex].dataset.full
+                    galleryImages[prevIndex].dataset.full
                 ) {
+
                     galleryViewerImgNext.src =
                         galleryImages[prevIndex].dataset.full;
+
                 }
 
 
@@ -683,7 +948,9 @@ if (galleryViewer) {
             }
 
         },
-        { passive: true }
+        {
+            passive: true
+        }
     );
 
 }
@@ -697,9 +964,26 @@ if (galleryViewer) {
 
     galleryViewer.addEventListener(
         "touchend",
-        () => {
+        event => {
 
-            if (!isDragging || isAnimating) {
+            if (isAnimating) {
+                return;
+            }
+
+
+            // ------------------------------------------
+            // 핀치 종료
+            // ------------------------------------------
+
+            if (event.touches.length > 0) {
+                return;
+            }
+
+
+            pinchStartDistance = 0;
+
+
+            if (!isDragging) {
                 return;
             }
 
@@ -707,8 +991,61 @@ if (galleryViewer) {
             isDragging = false;
 
 
+            // ==================================================
+            // 확대 상태
+            // ==================================================
+
+            if (scale > 1) {
+
+                // 너무 크게 벗어나지 않도록
+                // 현재 위치를 약간 제한
+                const width =
+                    galleryViewer.offsetWidth;
+
+                const height =
+                    galleryViewer.offsetHeight;
+
+
+                const maxX =
+                    width * (scale - 1) / 2;
+
+                const maxY =
+                    height * (scale - 1) / 2;
+
+
+                translateX =
+                    Math.max(
+                        -maxX,
+                        Math.min(
+                            maxX,
+                            translateX
+                        )
+                    );
+
+
+                translateY =
+                    Math.max(
+                        -maxY,
+                        Math.min(
+                            maxY,
+                            translateY
+                        )
+                    );
+
+
+                updateImageTransform();
+
+                return;
+            }
+
+
+            // ==================================================
+            // 기본 상태 → 사진 스와이프
+            // ==================================================
+
             const diff =
-                touchCurrentX - touchStartX;
+                touchCurrentX -
+                touchStartX;
 
 
             const threshold = 80;
@@ -740,7 +1077,6 @@ if (galleryViewer) {
                 }
 
 
-                // 스와이프 직후 발생하는 click 방지
                 setTimeout(() => {
 
                     ignoreClick = false;
@@ -794,7 +1130,6 @@ if (galleryViewer) {
     );
 
 }
-
 
 // ==================================================
 // 브라우저 뒤로가기
