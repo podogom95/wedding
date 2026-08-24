@@ -533,26 +533,22 @@ async function showImage(index, direction) {
 
     requestAnimationFrame(() => {
 
-        requestAnimationFrame(() => {
+        if (direction === "next") {
 
-            if (direction === "next") {
+            galleryViewerImg.style.transform =
+                `translateX(-${width}px)`;
 
-                galleryViewerImg.style.transform =
-                    `translateX(-${width}px)`;
+        } else {
 
-            } else {
+            galleryViewerImg.style.transform =
+                `translateX(${width}px)`;
 
-                galleryViewerImg.style.transform =
-                    `translateX(${width}px)`;
+        }
 
-            }
+        galleryViewerImg.style.opacity = "0";
 
-            galleryViewerImg.style.opacity = "0";
-
-            galleryViewerImgNext.style.transform =
-                "translateX(0)";
-
-        });
+        galleryViewerImgNext.style.transform =
+            "translateX(0)";
 
     });
 
