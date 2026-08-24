@@ -719,25 +719,6 @@ function getTouchDistance(touch1, touch2) {
 
 
 // ==================================================
-// 두 손가락 거리 계산
-// ==================================================
-
-function getTouchDistance(touch1, touch2) {
-
-    const dx =
-        touch2.clientX - touch1.clientX;
-
-    const dy =
-        touch2.clientY - touch1.clientY;
-
-    return Math.sqrt(
-        dx * dx + dy * dy
-    );
-
-}
-
-
-// ==================================================
 // 터치 시작
 // ==================================================
 
@@ -987,13 +968,20 @@ if (galleryViewer) {
                     galleryImages.length;
 
 
+                // 다음 이미지가 아직 캐시에 없다면 로딩 시작
+                preloadImage(nextIndex);
+
+
+                const nextSrc =
+                    galleryImages[nextIndex].dataset.full;
+
+
                 if (
-                    galleryViewerImgNext.src !==
-                    galleryImages[nextIndex].dataset.full
+                    galleryViewerImgNext.src !== nextSrc
                 ) {
 
                     galleryViewerImgNext.src =
-                        galleryImages[nextIndex].dataset.full;
+                        nextSrc;
 
                 }
 
@@ -1015,17 +1003,23 @@ if (galleryViewer) {
                         currentIndex -
                         1 +
                         galleryImages.length
-                    ) %
-                    galleryImages.length;
+                    ) % galleryImages.length;
+
+
+                // 이전 이미지가 아직 캐시에 없다면 로딩 시작
+                preloadImage(prevIndex);
+
+
+                const prevSrc =
+                    galleryImages[prevIndex].dataset.full;
 
 
                 if (
-                    galleryViewerImgNext.src !==
-                    galleryImages[prevIndex].dataset.full
+                    galleryViewerImgNext.src !== prevSrc
                 ) {
 
                     galleryViewerImgNext.src =
-                        galleryImages[prevIndex].dataset.full;
+                        prevSrc;
 
                 }
 
