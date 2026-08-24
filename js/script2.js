@@ -535,8 +535,20 @@ function showImage(index, direction) {
 
     else {
 
-        // 현재 손가락 위치에서 바로 이어서 이동
+        // 현재 사진을 화면 끝까지 이동
+        if (direction === "next") {
 
+            galleryViewerImg.style.transform =
+                `translateX(-${width}px)`;
+
+        } else {
+
+            galleryViewerImg.style.transform =
+                `translateX(${width}px)`;
+
+        }
+
+        // 다음 사진을 화면 중앙으로 이동
         galleryViewerImgNext.style.transform =
             "translateX(0)";
 
