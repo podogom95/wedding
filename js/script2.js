@@ -1094,14 +1094,14 @@ if (galleryViewer) {
 
             if (scale > 1) {
 
-                // 너무 크게 벗어나지 않도록
-                // 현재 위치를 약간 제한
+                // 확대 상태에서는 이미지가
+                // 화면 밖으로 너무 벗어나지 않도록 제한
+
                 const width =
                     galleryViewer.offsetWidth;
 
                 const height =
                     galleryViewer.offsetHeight;
-
 
                 const maxX =
                     width * (scale - 1) / 2;
@@ -1119,7 +1119,6 @@ if (galleryViewer) {
                         )
                     );
 
-
                 translateY =
                     Math.max(
                         -maxY,
@@ -1131,6 +1130,33 @@ if (galleryViewer) {
 
 
                 updateImageTransform();
+
+                return;
+            }
+
+
+            // ==================================================
+            // 축소 완료 → 가운데 정렬
+            // ==================================================
+
+            if (scale <= 1) {
+
+                scale = 1;
+
+                translateX = 0;
+                translateY = 0;
+
+                galleryViewerImg.classList.add("animating");
+
+                updateImageTransform();
+
+                setTimeout(() => {
+
+                    galleryViewerImg.classList.remove(
+                        "animating"
+                    );
+
+                }, 300);
 
                 return;
             }
