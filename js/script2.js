@@ -541,8 +541,6 @@ function showImage(index, direction) {
 
         }
 
-        galleryViewerImg.style.opacity = "0";
-
         galleryViewerImgNext.style.transform =
             "translateX(0)";
 
@@ -591,6 +589,76 @@ function showImage(index, direction) {
 
     }, 650);
 
+}
+
+function finishSwipe(index, direction, diff) {
+
+    if (isAnimating) return;
+
+    isAnimating = true;
+
+    const width = galleryViewer.offsetWidth;
+
+    const nextSrc =
+        galleryImages[index].dataset.full;
+
+    preloadImage(index);
+
+    galleryViewerImgNext.src = nextSrc;
+
+    galleryViewerImg.classList.add("animating");
+    galleryViewerImgNext.classList.add("animating");
+
+    // 현재 손가락 위치에서 그대로 이어서 이동
+    if (direction === "next") {
+
+        galleryViewerImg.style.transform =
+            `translateX(-${width}px)`;
+
+        galleryViewerImgNext.style.transform =
+            "translateX(0)";
+
+    } else {
+
+        galleryViewerImg.style.transform =
+            `translateX(${width}px)`;
+
+        galleryViewerImgNext.style.transform =
+            "translateX(0)";
+
+    }
+
+    // opacity는 건드리지 않는다
+
+    setTimeout(() => {
+
+        currentIndex = index;
+
+        galleryViewerImg.src =
+            galleryViewerImgNext.src;
+
+        galleryViewerImg.style.transform =
+            "translateX(0)";
+
+        galleryViewerImgNext.style.transform =
+            "translateX(0)";
+
+        galleryViewerImgNext.style.opacity =
+            "0";
+
+        galleryViewerImg.style.opacity =
+            "1";
+
+        galleryViewerImg.classList.remove("animating");
+        galleryViewerImgNext.classList.remove("animating");
+
+        resetZoom();
+
+        isAnimating = false;
+
+        preloadNearbyImages(currentIndex);
+
+    }, 650);
 }
 
 
@@ -1139,16 +1207,19 @@ if (galleryViewer) {
 
                 if (diff < 0) {
 
-                    showImage(
-                        currentIndex + 1,
-                        "next"
+                    finishSwipe(
+                        (currentIndex + 1) % galleryImages.length,
+                        "next",
+                        diff
                     );
 
                 } else {
 
-                    showImage(
-                        currentIndex - 1,
-                        "prev"
+                    finishSwipe(
+                        (currentIndex - 1 + galleryImages.length) %
+                        galleryImages.length,
+                        "prev",
+                        diff
                     );
 
                 }
