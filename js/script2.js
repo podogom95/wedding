@@ -871,7 +871,6 @@ if (galleryViewer) {
                 scale =
                     pinchStartScale * ratio;
 
-
                 scale =
                     Math.max(
                         MIN_SCALE,
@@ -881,9 +880,39 @@ if (galleryViewer) {
                         )
                     );
 
-                // 축소해서 원본 크기로 돌아오면
-                // 위치도 중앙으로 초기화
-                if (scale === MIN_SCALE) {
+
+                // ==================================================
+                // 1배율 근처 → 중앙으로 자석처럼 끌어당김
+                // ==================================================
+
+                const MAGNET_SCALE = 1.25;
+
+                if (scale < MAGNET_SCALE) {
+
+                    // 1.25 → 1.0
+                    // 0 → 1 로 변환
+                    const magnetStrength =
+                        (MAGNET_SCALE - scale) /
+                        (MAGNET_SCALE - MIN_SCALE);
+
+                    // 부드럽게 증가하는 효과
+                    const easedStrength =
+                        magnetStrength * magnetStrength;
+
+                    translateX *=
+                        (1 - easedStrength);
+
+                    translateY *=
+                        (1 - easedStrength);
+
+                }
+
+
+                // 1배율에 도달하면 완전히 중앙
+                if (scale <= MIN_SCALE) {
+
+                    scale = MIN_SCALE;
+
                     translateX = 0;
                     translateY = 0;
 
@@ -893,7 +922,6 @@ if (galleryViewer) {
                 updateImageTransform();
 
                 return;
-            }
 
 
             // ==================================================
