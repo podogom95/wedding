@@ -513,12 +513,12 @@ function showImage(index, direction) {
     if (direction === "next") {
 
         galleryViewerImg.style.transform =
-            `translateX(-${width}px)`;
+            translate3d(-${width}px, 0, 0)
 
     } else {
 
         galleryViewerImg.style.transform =
-            `translateX(${width}px)`;
+            translate3d(-${width}px, 0, 0)
 
     }
 
@@ -925,7 +925,7 @@ if (galleryViewer) {
 
             // 현재 사진 이동
             galleryViewerImg.style.transform =
-                `translateX(${limitedDiff}px)`;
+                `translate3d(${limitedDiff}px, 0, 0)`;
 
 
             // --------------------------------------------------
@@ -958,7 +958,7 @@ if (galleryViewer) {
 
 
                 galleryViewerImgNext.style.transform =
-                    `translateX(${width + limitedDiff}px)`;
+                    `translate3d(${width + limitedDiff}px, 0, 0)`;
 
             }
 
