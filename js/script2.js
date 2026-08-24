@@ -54,6 +54,9 @@ function copyText(text) {
 
 const bgm = document.getElementById("bgm");
 const musicButton = document.getElementById("musicButton");
+const intro = document.querySelector(".intro");
+
+let musicStarted = false;
 
 
 // --------------------------------------------------
@@ -66,6 +69,8 @@ function playMusic() {
 
     bgm.play()
         .then(() => {
+
+            musicStarted = true;
 
             if (musicButton) {
                 musicButton.classList.add("playing");
@@ -113,13 +118,9 @@ if (musicButton && bgm) {
         event.stopPropagation();
 
         if (bgm.paused) {
-
             playMusic();
-
         } else {
-
             pauseMusic();
-
         }
 
     });
@@ -128,57 +129,32 @@ if (musicButton && bgm) {
 
 
 // --------------------------------------------------
-// 첫 화면 사용자 동작 → 음악 시작
+// 첫 번째 Hero 카드 터치 → 음악 시작
 // --------------------------------------------------
 
-let musicStarted = false;
+if (intro && bgm) {
 
-function startMusicFromUserInteraction() {
+    intro.addEventListener("touchstart", () => {
 
-    if (!bgm || musicStarted) return;
+        if (!musicStarted) {
+            playMusic();
+        }
 
-    bgm.play()
-        .then(() => {
+    }, {
+        passive: true
+    });
 
-            musicStarted = true;
 
-            if (musicButton) {
-                musicButton.classList.add("playing");
-            }
+    // PC 테스트용
+    intro.addEventListener("click", () => {
 
-            console.log("사용자 동작으로 BGM 재생");
+        if (!musicStarted) {
+            playMusic();
+        }
 
-        })
-        .catch(error => {
-
-            console.log("BGM 자동재생 차단:", error);
-
-        });
+    });
 
 }
-
-
-// --------------------------------------------------
-// 모바일
-// 손가락을 화면에 대는 순간
-// --------------------------------------------------
-
-document.addEventListener(
-    "touchstart",
-    startMusicFromUserInteraction,
-    { passive: true }
-);
-
-
-// --------------------------------------------------
-// PC
-// --------------------------------------------------
-
-document.addEventListener(
-    "pointerdown",
-    startMusicFromUserInteraction,
-    { once: true }
-);
 
 
 // ==================================================
