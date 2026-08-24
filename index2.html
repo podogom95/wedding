@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>모바일 청첩장</title>
+
+    <link rel="stylesheet" href="css/style.css">
+
+</head>
+
+<body>
+<section class="intro hero card">
+
+    <!-- 수정 ① -->
+    <img src="images/017.jpg" alt="hero 사진">
+    <h1>강해영 ♥ 홍지애</h1>
+
+    <!-- 수정 ② -->
+    <p>2026년 12월 5일 토요일 오후 5시</p>
+
+    <!-- 수정 ③ -->
+    <p>
+        서울 로얄파크컨벤션 3층 로얄홀
+    </p>
+
+</section>
+
+<section class="message card">
+    <h2>초대합니다</h2>
+
+    <!-- 수정 ④ -->
+    <p>
+        서로 다른 길을 걸어온 두 사람이
+        이제 같은 길을 함께 걸어가려 합니다.
+        소중한 분들을 모시고
+        새로운 출발을 함께하고자 합니다.
+    </p>
+    <span>강기석•유수정의 장남 강해영</span><br>
+    <span>홍완표•박정은의 차녀 홍지애</span>
+
+</section>
+
+<section class="gallery card">
+
+    <h2>Gallery</h2>
+
+    <div class="grid">
+
+        <img src="images/001.jpg" class="gallery-img">
+        <img src="images/002.jpg" class="gallery-img">
+        <img src="images/003.jpg" class="gallery-img">
+        <img src="images/004.jpg" class="gallery-img">
+        <img src="images/005.jpg" class="gallery-img">
+        <img src="images/006.jpg" class="gallery-img">
+        <img src="images/007.jpg" class="gallery-img">
+        <img src="images/008.jpg" class="gallery-img">
+        <img src="images/009.jpg" class="gallery-img">
+        <img src="images/010.jpg" class="gallery-img">
+        <img src="images/011.jpg" class="gallery-img">
+        <img src="images/012.jpg" class="gallery-img">
+        <img src="images/013.jpg" class="gallery-img">
+        <img src="images/014.jpg" class="gallery-img">
+        <img src="images/015.jpg" class="gallery-img">
+        <img src="images/016.jpg" class="gallery-img">
+        <img src="images/017.jpg" class="gallery-img">
+        <img src="images/018.jpg" class="gallery-img">
+        <img src="images/019.jpg" class="gallery-img">
+        <img src="images/020.jpg" class="gallery-img">
+        
+
+    </div>
+
+</section>
+
+<section class="location card hero">
+
+    <h2>오시는 길</h2>
+    <img src="images/099.png" alt="지도">
+
+    <h3>로얄파크컨벤션</h3>
+
+    <p>
+        서울특별시 용산구 이태원로 29
+    </p>
+
+    <div class="map-buttons">
+
+        <a
+            href="https://map.kakao.com/?q=로얄파크컨벤션"
+            target="_blank"
+            rel="noopener noreferrer"
+        ><img src="images/kakaomap.png" alt="카카오맵"></a>
+        <a href="https://map.naver.com/p/search/로얄파크컨벤션"
+            target="_blank"
+            rel="noopener noreferrer"><img src="images/navermaps.png" alt="네이버지도"></a>
+        <a
+            href="https://tmap.life/route?goalname=로얄파크컨벤션&goalx=126.975&goaly=37.535"
+            target="_blank"
+            rel="noopener noreferrer"
+        ><img src="images/tmapicon.jpeg" alt="티"><img src="images/tmapname.png" alt="맵"></a>
+
+    </div>
+
+</section>
+
+<section class="account card">
+
+    <h2>마음 전하실 곳</h2>
+
+    <button class="accordion">
+        ❤️신랑측
+    </button>
+
+    <div class="panel">
+
+        <!-- 수정 ⑤ -->
+
+        <p>
+            아버지 강기석
+            국민은행 123456789012
+            <button onclick="copyText('123456789012')">
+                복사
+            </button>
+        </p>
+
+        <p>
+            어머니 유수정
+            신한은행 111122223333
+            <button onclick="copyText('111122223333')">
+                복사
+            </button>
+        </p>
+
+        <p>
+            강해영
+            국민은행 123456789012
+            <button onclick="copyText('123456789012')">
+                복사
+            </button>
+        </p>
+
+    </div>
+
+    <button class="accordion">
+        ❤️신부측
+    </button>
+
+    <div class="panel">
+
+        <p>
+            아버지 홍완표
+            농협 999988887777
+            <button onclick="copyText('999988887777')">
+                복사
+            </button>
+        </p>
+
+        <p>
+            어머니 박정은
+            우리은행 444455556666
+            <button onclick="copyText('444455556666')">
+                복사
+            </button>
+        </p>
+
+        <p>
+            홍지애
+            농협 999988887777
+            <button onclick="copyText('999988887777')">
+                복사
+            </button>
+        </p>
+        
+    </div>
+
+</section>
+
+<!--갤러리 뷰어-->
+<div id="galleryViewer" class="gallery-viewer">
+    <button class="gallery-close">×</button>
+    <button class="gallery-prev">‹</button>
+    <div class="gallery-image-container">
+        <img id="galleryViewerImg"
+             class="gallery-image"
+             src=""
+             alt="">
+        <img id="galleryViewerImgNext"
+             class="gallery-image"
+             src=""
+             alt="">
+    </div>
+    <button class="gallery-next">›</button>
+</div>
+
+<!-- 배경음악 -->
+<audio id="bgm" loop preload="auto">
+    <source src="music/wedding.mp3" type="audio/mpeg">
+</audio>
+
+<!-- 음악 버튼 -->
+<button id="musicButton"
+        class="music-button"
+        aria-label="배경음악 켜기/끄기">
+    ♪
+</button>
+    
+<script src="js/script2.js"></script>
+</body>
+</html>
