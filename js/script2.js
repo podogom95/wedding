@@ -489,16 +489,6 @@ function showImage(index, direction) {
 
     preloadImage(index);
 
-    /*
-     * 버튼 클릭인지 스와이프인지 구분
-     *
-     * swipeCurrentX가 0이면 버튼 이동
-     * 0이 아니면 스와이프에서 이어지는 이동
-     */
-
-    const isSwipe =
-        swipeCurrentX !== 0;
-
 
     // 다음 이미지 준비
     galleryViewerImgNext.src = nextSrc;
@@ -513,27 +503,19 @@ function showImage(index, direction) {
     if (direction === "next") {
 
         galleryViewerImg.style.transform =
-            translate3d(-${width}px, 0, 0)
+            `translate3d(-${width}px, 0, 0)`;
 
     } else {
 
         galleryViewerImg.style.transform =
-            translate3d(-${width}px, 0, 0)
+            `translate3d(${width}px, 0, 0)`;
 
     }
 
 
     // 다음 사진은 중앙에 고정
     galleryViewerImgNext.style.transform =
-        "translateX(0)";
-
-
-    requestAnimationFrame(() => {
-
-        galleryViewerImgNext.style.transform =
-            "translateX(0)";
-
-    });
+        "translate3d(0, 0, 0)";
 
 
     setTimeout(() => {
