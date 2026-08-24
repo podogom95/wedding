@@ -607,8 +607,13 @@ if (galleryViewer) {
                     galleryImages.length;
 
 
-                galleryViewerImgNext.src =
-                    galleryImages[nextIndex].dataset.full;
+                if (
+                    galleryViewerImgNext.src !==
+                        galleryImages[nextIndex].dataset.full
+                ) {
+                    galleryViewerImgNext.src =
+                        galleryImages[nextIndex].dataset.full;
+                }
 
 
                 galleryViewerImgNext.style.transform =
@@ -632,8 +637,13 @@ if (galleryViewer) {
                     galleryImages.length;
 
 
-                galleryViewerImgNext.src =
-                    galleryImages[prevIndex].dataset.full;
+                if (                
+                    galleryViewerImgNext.src !==
+                        galleryImages[prevIndex].dataset.full
+                ) {
+                    galleryViewerImgNext.src =
+                        galleryImages[prevIndex].dataset.full;
+                }
 
 
                 galleryViewerImgNext.style.transform =
