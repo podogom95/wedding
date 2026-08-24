@@ -271,6 +271,9 @@ let touchCurrentY = 0;
 
 let ignoreClick = false;
 
+// 스와이프 중 현재 이미지 이동 거리
+let swipeCurrentX = 0;
+
 
 // ==================================================
 // 확대 / 축소
@@ -478,68 +481,69 @@ function showImage(index, direction) {
 
     isAnimating = true;
 
-
-    // --------------------------------------------------
-    // 다음 이미지 준비
-    // --------------------------------------------------
+        const width =
+        galleryViewer.offsetWidth;
 
     const nextSrc =
         galleryImages[index].dataset.full;
 
-
-    // 캐시에 없으면 preload
     preloadImage(index);
 
+    /*
+     * 버튼 클릭인지 스와이프인지 구분
+     *
+     * swipeCurrentX가 0이면 버튼 이동
+     * 0이 아니면 스와이프에서 이어지는 이동
+     */
 
-    // 캐시에 저장된 이미지 사용
+    const isSwipe =
+        swipeCurrentX !== 0;
+
+
+    // 다음 이미지 준비
     galleryViewerImgNext.src = nextSrc;
-
-
-    const width =
-        galleryViewer.offsetWidth;
-
 
     galleryViewerImg.classList.add("animating");
     galleryViewerImgNext.classList.add("animating");
 
+    galleryViewerImgNext.style.opacity = "1";
 
-    // --------------------------------------------------
-    // 다음 사진 위치
-    // --------------------------------------------------
 
-    if (direction === "next") {
+    // ==========================================
+    // 버튼 이동
+    // ==========================================
 
-        galleryViewerImgNext.style.transform =
+    if (!isSwipe) {
+
+        if (direction === "next") {
+            galleryViewerImg.style.transform =
+            `translateX(-${width}px)`;
+
+        } else {
+            galleryViewerImg.style.transform =
             `translateX(${width}px)`;
 
-    } else {
+        }
+        galleryViewerImgNext.style.transform =
+        "translateX(0)";
+    }
+
+
+    // ==========================================
+    // 스와이프 이동
+    // ==========================================
+
+    else {
+
+        // 현재 손가락 위치에서 바로 이어서 이동
 
         galleryViewerImgNext.style.transform =
-            `translateX(-${width}px)`;
+            "translateX(0)";
 
     }
 
 
-    galleryViewerImgNext.style.opacity = "1";
-
-
-    // --------------------------------------------------
-    // 애니메이션
-    // --------------------------------------------------
-
     requestAnimationFrame(() => {
-
-        if (direction === "next") {
-
-            galleryViewerImg.style.transform =
-                `translateX(-${width}px)`;
-
-        } else {
-
-            galleryViewerImg.style.transform =
-                `translateX(${width}px)`;
-
-        }
 
         galleryViewerImgNext.style.transform =
             "translateX(0)";
@@ -547,89 +551,6 @@ function showImage(index, direction) {
     });
 
 
-    // --------------------------------------------------
-    // 애니메이션 종료
-    // --------------------------------------------------
-
-    setTimeout(() => {
-
-        currentIndex = index;
-
-
-        galleryViewerImg.src =
-            galleryViewerImgNext.src;
-
-
-        galleryViewerImg.style.transform =
-            "translateX(0)";
-
-        galleryViewerImg.style.opacity =
-            "1";
-
-
-        galleryViewerImgNext.style.transform =
-            "translateX(0)";
-
-        galleryViewerImgNext.style.opacity =
-            "0";
-
-
-        galleryViewerImg.classList.remove("animating");
-        galleryViewerImgNext.classList.remove("animating");
-
-         // ★ 이미지 전환이 끝난 후 확대 상태 초기화
-        resetZoom();
-
-
-        isAnimating = false;
-
-
-        // 다음 이동을 위한 앞뒤 이미지 preload
-        preloadNearbyImages(currentIndex);
-
-    }, 650);
-
-}
-
-function finishSwipe(index, direction, diff) {
-
-    if (isAnimating) return;
-
-    isAnimating = true;
-
-    const width = galleryViewer.offsetWidth;
-
-    const nextSrc =
-        galleryImages[index].dataset.full;
-
-    preloadImage(index);
-
-    galleryViewerImgNext.style.opacity = "1";
-
-    galleryViewerImg.classList.add("animating");
-    galleryViewerImgNext.classList.add("animating");
-
-    // 현재 손가락 위치에서 그대로 이어서 이동
-    if (direction === "next") {
-
-        galleryViewerImg.style.transform =
-            `translateX(-${width}px)`;
-
-        galleryViewerImgNext.style.transform =
-            "translateX(0)";
-
-    } else {
-
-        galleryViewerImg.style.transform =
-            `translateX(${width}px)`;
-
-        galleryViewerImgNext.style.transform =
-            "translateX(0)";
-
-    }
-
-    // opacity는 건드리지 않는다
-
     setTimeout(() => {
 
         currentIndex = index;
@@ -643,14 +564,16 @@ function finishSwipe(index, direction, diff) {
         galleryViewerImgNext.style.transform =
             "translateX(0)";
 
-        galleryViewerImgNext.style.opacity =
-            "0";
-
         galleryViewerImg.style.opacity =
             "1";
 
+        galleryViewerImgNext.style.opacity =
+            "0";
+
         galleryViewerImg.classList.remove("animating");
         galleryViewerImgNext.classList.remove("animating");
+
+        swipeCurrentX = 0;
 
         resetZoom();
 
@@ -660,7 +583,6 @@ function finishSwipe(index, direction, diff) {
 
     }, 650);
 }
-
 
 // ==================================================
 // 갤러리 썸네일 클릭
@@ -1014,6 +936,7 @@ if (galleryViewer) {
                     )
                 );
 
+            swipeCurrentX = limitedDiff;
 
             // 현재 사진 이동
             galleryViewerImg.style.transform =
@@ -1207,19 +1130,16 @@ if (galleryViewer) {
 
                 if (diff < 0) {
 
-                    finishSwipe(
-                        (currentIndex + 1) % galleryImages.length,
-                        "next",
-                        diff
+                    showImage(
+                        currentIndex + 1,
+                        "next"
                     );
 
                 } else {
 
-                    finishSwipe(
-                        (currentIndex - 1 + galleryImages.length) %
-                        galleryImages.length,
-                        "prev",
-                        diff
+                    showImage(
+                        currentIndex - 1,
+                        "prev"
                     );
 
                 }
