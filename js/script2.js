@@ -245,6 +245,8 @@ function openGallery(index) {
 
     document.body.classList.add("gallery-open");
 
+    preloadNearbyImages(currentIndex);
+
 
     // Android / iPhone 뒤로가기 처리
     history.pushState(
@@ -274,6 +276,32 @@ function closeGallery() {
 
 }
 
+
+// ==================================================
+// 주변 이미지 미리 로딩
+// ==================================================
+
+function preloadNearbyImages(index) {
+
+    const prev =
+        (index - 1 + galleryImages.length)
+        % galleryImages.length;
+
+    const next =
+        (index + 1)
+        % galleryImages.length;
+
+    [prev, next].forEach(i => {
+
+        const preload = new Image();
+
+        preload.src =
+            galleryImages[i].dataset.full ||
+            galleryImages[i].src;
+
+    });
+
+}
 
 // ==================================================
 // 사진 변경
@@ -377,6 +405,9 @@ function showImage(index, direction) {
 
         currentIndex = index;
 
+        
+        preloadNearbyImages(currentIndex);
+        
 
         galleryViewerImg.src =
             galleryViewerImgNext.src;
