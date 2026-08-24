@@ -166,7 +166,7 @@ function startMusicFromUserInteraction() {
 document.addEventListener(
     "touchstart",
     startMusicFromUserInteraction,
-    { passive: true, once: true }
+    { passive: true }
 );
 
 
