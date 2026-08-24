@@ -1,0 +1,429 @@
+* {
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body{
+    margin:0;
+    font-family:-apple-system, BlinkMacSystemFont, "Noto Sans KR",
+                 "Apple SD Gothic Neo", sans-serif;
+    color:#333;
+    background:#f5f5f5;
+}
+
+.card{
+    max-width:600px;
+    background:#fff;
+    border-radius:20px;
+    padding:40px 30px;
+    margin:30px auto;
+    box-shadow:0 2px 10px rgba(0,0,0,.04);
+    opacity: 0;
+    transform: translateY(30px);
+    transition: all 0.8s ease,
+                transform 0.8s ease;
+    text-align: center;
+}
+
+.card.show{
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.hero img{
+    width:100%;
+    max-width: 100%;
+    height: auto;
+    display:block;
+    border-radius: 20px;
+}
+
+/* =========================================
+   Gallery
+   ========================================= */
+
+.gallery .grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 5px;
+    width: 100%;
+}
+
+
+/* 썸네일 */
+.gallery .grid .gallery-img {
+    display: block;
+
+    width: 100%;
+    height: 100%;
+
+    aspect-ratio: 1 / 1;
+
+    object-fit: cover;
+
+    margin: 0;
+    padding: 0;
+
+    border-radius: 8px;
+
+    cursor: pointer;
+
+    user-select: none;
+    -webkit-user-select: none;
+
+    -webkit-touch-callout: none;
+    -webkit-tap-highlight-color: transparent;
+
+    -webkit-user-drag: none;
+
+    transition: opacity 0.2s ease;
+}
+
+
+.gallery .grid .gallery-img:hover {
+    opacity: 0.85;
+}
+
+
+/* 터치/마우스 반응 */
+.grid img:hover {
+    opacity: 0.85;
+}
+
+.map-buttons{
+    display:flex;
+    gap:8px;
+    justify-content:center;
+    flex-wrap:wrap;
+    margin-top: 25px;
+}
+
+.map-buttons a {
+    flex: 1;
+    min-width: 90px;
+
+    height: 50px;
+
+    padding: 8px 10px;
+
+    border: 1px solid #ddd;
+    border-radius: 10px;
+
+    background: #fff;
+
+    text-decoration: none;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 3px;
+
+    overflow: hidden;
+}
+
+.map-buttons img {
+    max-height: 28px;
+    width: auto;
+
+    display: block;
+
+    object-fit: contain;
+}
+
+.accordion{
+    width: 100%;
+    max-width: 340px;
+
+    margin: 20px auto;
+    padding: 15px 20px;
+
+    border: none;
+    border-radius: 30px;
+
+    background: #f8f4f2;
+    color: #666;
+
+    font-family: inherit;
+    font-size: 14px;
+
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+.accordion:hover {
+    background: #f1e9e6;
+}
+
+.accordion-icon {
+    margin-right: 8px;
+    color: #c8aaa5;
+    font-size: 19px;
+}
+
+.panel{
+    display:none;
+    padding:10px;
+}
+
+.gallery-viewer {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+
+    display: none;
+    align-items: center;
+    justify-content: center;
+
+    width: 100%;
+    height: 100vh;
+    height: 100dvh;
+
+    background: rgba(0, 0, 0, 0.95);
+
+    padding:
+        env(safe-area-inset-top)
+        env(safe-area-inset-right)
+        env(safe-area-inset-bottom)
+        env(safe-area-inset-left);
+
+    /* 가로/세로 터치를 JS에서 직접 처리 */
+    touch-action: none;
+
+    overflow: hidden;
+}
+
+
+.gallery-viewer.active {
+    display: flex;
+}
+
+
+/* =========================================
+   이미지 영역
+   ========================================= */
+
+.gallery-image-container {
+    position: relative;
+
+    width: 100%;
+    height: 100%;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    overflow: hidden;
+
+    touch-action: none;
+}
+
+
+/* =========================================
+   갤러리 이미지
+   ========================================= */
+
+.gallery-image {
+    position: absolute;
+
+    max-width: 100%;
+    max-height: 100%;
+
+    width: auto;
+    height: auto;
+
+    object-fit: contain;
+
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-user-drag: none;
+
+    pointer-events: none;
+
+    transform-origin: center center;
+
+    will-change: transform, opacity;
+}
+
+
+/* 현재 사진 */
+.gallery-image.current {
+    transform: translateX(0);
+    opacity: 1;
+}
+
+
+/* 다음/이전 사진 */
+.gallery-image.next {
+    opacity: 0;
+}
+
+
+/* 손을 놓았을 때 사용하는 부드러운 애니메이션 */
+.gallery-image.animating {
+    transition:
+        transform 0.65s cubic-bezier(0.25, 0.8, 0.25, 1),
+        opacity 0.5s ease;
+}
+
+.gallery-img,
+.gallery-image {
+    user-select: none;
+    -webkit-user-select: none;
+
+    -webkit-touch-callout: none;
+    -webkit-tap-highlight-color: transparent;
+
+    -webkit-user-drag: none;
+    user-drag: none;
+}
+/* =========================================
+   버튼
+   ========================================= */
+
+.gallery-close,
+.gallery-prev,
+.gallery-next {
+    position: absolute;
+    z-index: 20;
+
+    border: none;
+    padding: 0;
+
+    background: transparent;
+    color: white;
+
+    cursor: pointer;
+
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+}
+
+
+/* X */
+.gallery-close {
+    top: calc(10px + env(safe-area-inset-top));
+    right: calc(15px + env(safe-area-inset-right));
+
+    width: 45px;
+    height: 45px;
+
+    font-size: 40px;
+    line-height: 45px;
+}
+
+
+/* 좌우 버튼 */
+.gallery-prev,
+.gallery-next {
+    top: 50%;
+
+    width: 50px;
+    height: 80px;
+
+    transform: translateY(-50%);
+
+    font-size: 55px;
+    line-height: 80px;
+}
+
+
+/* 이전 */
+.gallery-prev {
+    left: 10px;
+}
+
+
+/* 다음 */
+.gallery-next {
+    right: 10px;
+}
+
+
+/* =========================================
+   모달이 열린 동안 배경 스크롤 방지
+   ========================================= */
+
+body.gallery-open {
+    overflow: hidden;
+}
+
+
+/* ==================================================
+   배경음악 버튼
+   ================================================== */
+
+.music-button {
+    position: fixed;
+
+    right: 18px;
+    bottom: 18px;
+
+    width: 42px;
+    height: 42px;
+
+    z-index: 10000;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 0;
+
+    border: 1px solid rgba(200, 170, 165, 0.35);
+    border-radius: 50%;
+
+    background: rgba(255, 255, 255, 0.88);
+
+    color: #c8aaa5;
+
+    font-family: serif;
+    font-size: 21px;
+
+    cursor: pointer;
+
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+
+    box-shadow:
+        0 2px 10px rgba(0, 0, 0, 0.08);
+
+    transition:
+        opacity 0.3s ease,
+        background 0.3s ease,
+        transform 0.3s ease;
+}
+
+
+/* 터치했을 때 */
+.music-button:active {
+    transform: scale(0.92);
+}
+
+
+/* 음악 재생 중 */
+.music-button.playing {
+    animation: musicRotate 4s linear infinite;
+}
+
+
+/* 음악 정지 */
+.music-button:not(.playing) {
+    opacity: 0.65;
+}
+
+
+/* 은은한 회전 */
+@keyframes musicRotate {
+
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+
+}
