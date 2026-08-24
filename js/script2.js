@@ -343,6 +343,29 @@ function resetZoom() {
 
 }
 
+// ==================================================
+// 확대 축소 후 이미지 중앙 정렬
+// ==================================================
+
+function centerImage() {
+
+    if (!galleryViewerImg) return;
+
+    galleryViewerImg.classList.add("animating");
+
+    translateX = 0;
+    translateY = 0;
+
+    galleryViewerImg.style.transform =
+        `translate(0px, 0px) scale(${scale})`;
+
+    setTimeout(() => {
+
+        galleryViewerImg.classList.remove("animating");
+
+    }, 300);
+
+}
 
 // ==================================================
 // 갤러리 열기
@@ -857,6 +880,14 @@ if (galleryViewer) {
                             scale
                         )
                     );
+
+                // 축소해서 원본 크기로 돌아오면
+                // 위치도 중앙으로 초기화
+                if (scale === MIN_SCALE) {
+                    translateX = 0;
+                    translateY = 0;
+
+                }
 
 
                 updateImageTransform();
