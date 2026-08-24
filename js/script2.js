@@ -198,6 +198,69 @@ let savedScrollY = 0;
 
 let isAnimating = false;
 
+// ==================================================
+// 원본 이미지 캐시
+// ==================================================
+
+const imageCache = new Map();
+
+
+// ==================================================
+// 원본 이미지 preload + decode
+// ==================================================
+
+function preloadImage(index) {
+
+    if (
+        index < 0 ||
+        index >= galleryImages.length
+    ) {
+        return Promise.resolve(null);
+    }
+
+
+    const src =
+        galleryImages[index].dataset.full;
+
+
+    // 이미 캐시에 있으면 기존 Promise 반환
+    if (imageCache.has(src)) {
+
+        return imageCache.get(src).promise;
+
+    }
+
+
+    const img = new Image();
+
+    img.src = src;
+
+
+    const promise =
+        img.decode
+            ? img.decode().catch(() => {})
+            : new Promise(resolve => {
+
+                if (img.complete) {
+                    resolve();
+                } else {
+                    img.onload = resolve;
+                    img.onerror = resolve;
+                }
+
+            });
+
+
+    imageCache.set(src, {
+        img: img,
+        promise: promise
+    });
+
+
+    return promise;
+
+}
+
 let isDragging = false;
 
 let touchStartX = 0;
@@ -294,8 +357,10 @@ function openGallery(index) {
 
     currentIndex = index;
 
-    galleryViewerImg.src =
-        galleryImages[currentIndex].dataset.full;
+    const currentSrc =
+    galleryImages[currentIndex].dataset.full;
+
+    galleryViewerImg.src = currentSrc;
 
     galleryViewerImgNext.src = "";
 
@@ -349,28 +414,37 @@ function closeGallery() {
 
 
 // ==================================================
-// 주변 이미지 미리 로딩
+// 현재 이미지 + 앞뒤 이미지 preload
 // ==================================================
 
 function preloadNearbyImages(index) {
 
+    const total =
+        galleryImages.length;
+
+
+    if (total === 0) {
+        return;
+    }
+
+
     const prev =
-        (index - 1 + galleryImages.length)
-        % galleryImages.length;
+        (index - 1 + total) % total;
 
     const next =
-        (index + 1)
-        % galleryImages.length;
+        (index + 1) % total;
 
-    [prev, next].forEach(i => {
 
-        const preload = new Image();
+    // 현재 이미지
+    preloadImage(index);
 
-        preload.src =
-            galleryImages[i].dataset.full ||
-            galleryImages[i].src;
 
-    });
+    // 이전 이미지
+    preloadImage(prev);
+
+
+    // 다음 이미지
+    preloadImage(next);
 
 }
 
@@ -378,7 +452,7 @@ function preloadNearbyImages(index) {
 // 사진 변경
 // ==================================================
 
-function showImage(index, direction) {
+async function showImage(index, direction) {
 
     if (
         isAnimating ||
@@ -404,16 +478,29 @@ function showImage(index, direction) {
 
     isAnimating = true;
 
+
+    // 사진 변경 시 확대 상태 초기화
     resetZoom();
+
+
+    // --------------------------------------------------
+    // 다음 이미지 준비
+    // --------------------------------------------------
+
+    const nextSrc =
+        galleryImages[index].dataset.full;
+
+
+    // 캐시에 없으면 preload
+    await preloadImage(index);
+
+
+    // 캐시에 저장된 이미지 사용
+    galleryViewerImgNext.src = nextSrc;
 
 
     const width =
         galleryViewer.offsetWidth;
-
-
-    // 다음 사진 준비
-    galleryViewerImgNext.src =
-        galleryImages[index].dataset.full;
 
 
     galleryViewerImg.classList.add("animating");
@@ -421,7 +508,7 @@ function showImage(index, direction) {
 
 
     // --------------------------------------------------
-    // 다음 사진
+    // 다음 사진 위치
     // --------------------------------------------------
 
     if (direction === "next") {
@@ -429,13 +516,7 @@ function showImage(index, direction) {
         galleryViewerImgNext.style.transform =
             `translateX(${width}px)`;
 
-    }
-
-    // --------------------------------------------------
-    // 이전 사진
-    // --------------------------------------------------
-
-    else {
+    } else {
 
         galleryViewerImgNext.style.transform =
             `translateX(-${width}px)`;
@@ -446,7 +527,10 @@ function showImage(index, direction) {
     galleryViewerImgNext.style.opacity = "1";
 
 
-    // 브라우저가 위치를 인식한 후 애니메이션 시작
+    // --------------------------------------------------
+    // 애니메이션
+    // --------------------------------------------------
+
     requestAnimationFrame(() => {
 
         requestAnimationFrame(() => {
@@ -473,14 +557,14 @@ function showImage(index, direction) {
     });
 
 
-    // CSS transition 시간과 맞춤
+    // --------------------------------------------------
+    // 애니메이션 종료
+    // --------------------------------------------------
+
     setTimeout(() => {
 
         currentIndex = index;
 
-        
-        preloadNearbyImages(currentIndex);
-        
 
         galleryViewerImg.src =
             galleryViewerImgNext.src;
@@ -505,6 +589,10 @@ function showImage(index, direction) {
 
 
         isAnimating = false;
+
+
+        // 다음 이동을 위한 앞뒤 이미지 preload
+        preloadNearbyImages(currentIndex);
 
     }, 650);
 
