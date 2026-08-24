@@ -223,7 +223,7 @@ function openGallery(index) {
     currentIndex = index;
 
     galleryViewerImg.src =
-        galleryImages[currentIndex].src;
+        galleryImages[currentIndex].dataset.full;
 
     galleryViewerImgNext.src = "";
 
@@ -312,7 +312,7 @@ function showImage(index, direction) {
 
     // 다음 사진 준비
     galleryViewerImgNext.src =
-        galleryImages[index].src;
+        galleryImages[index].dataset.full;
 
 
     galleryViewerImg.classList.add("animating");
@@ -608,7 +608,7 @@ if (galleryViewer) {
 
 
                 galleryViewerImgNext.src =
-                    galleryImages[nextIndex].src;
+                    galleryImages[nextIndex].dataset.full;
 
 
                 galleryViewerImgNext.style.transform =
@@ -633,7 +633,7 @@ if (galleryViewer) {
 
 
                 galleryViewerImgNext.src =
-                    galleryImages[prevIndex].src;
+                    galleryImages[prevIndex].dataset.full;
 
 
                 galleryViewerImgNext.style.transform =
