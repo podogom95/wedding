@@ -417,7 +417,8 @@ function closeGallery() {
 
 
 // ==================================================
-// 현재 이미지 + 앞뒤 이미지 preload
+// 현재 이미지 주변 5장 preload
+// 현재 + 앞 2장 + 뒤 2장
 // ==================================================
 
 function preloadNearbyImages(index) {
@@ -425,29 +426,59 @@ function preloadNearbyImages(index) {
     const total =
         galleryImages.length;
 
-
     if (total === 0) {
         return;
     }
 
 
-    const prev =
-        (index - 1 + total) % total;
+    const KEEP_RANGE = 2;
 
-    const next =
-        (index + 1) % total;
+    const keepIndexes = new Set();
 
 
-    // 현재 이미지
-    preloadImage(index);
+    // ------------------------------------------
+    // 현재 이미지 기준 앞뒤 2장
+    // ------------------------------------------
+
+    for (
+        let offset = -KEEP_RANGE;
+        offset <= KEEP_RANGE;
+        offset++
+    ) {
+
+        const targetIndex =
+            (index + offset + total) % total;
+
+        keepIndexes.add(targetIndex);
+
+        preloadImage(targetIndex);
+
+    }
 
 
-    // 이전 이미지
-    preloadImage(prev);
+    // ------------------------------------------
+    // 범위를 벗어난 이미지 캐시 제거
+    // ------------------------------------------
+
+    for (const [src, cache] of imageCache) {
+
+        const cacheIndex =
+            galleryImages.findIndex(
+                image =>
+                    image.dataset.full === src
+            );
 
 
-    // 다음 이미지
-    preloadImage(next);
+        if (
+            cacheIndex !== -1 &&
+            !keepIndexes.has(cacheIndex)
+        ) {
+
+            imageCache.delete(src);
+
+        }
+
+    }
 
 }
 
