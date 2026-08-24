@@ -479,10 +479,6 @@ function showImage(index, direction) {
     isAnimating = true;
 
 
-    // 사진 변경 시 확대 상태 초기화
-    resetZoom();
-
-
     // --------------------------------------------------
     // 다음 이미지 준비
     // --------------------------------------------------
@@ -582,6 +578,9 @@ function showImage(index, direction) {
 
         galleryViewerImg.classList.remove("animating");
         galleryViewerImgNext.classList.remove("animating");
+
+         // ★ 이미지 전환이 끝난 후 확대 상태 초기화
+        resetZoom();
 
 
         isAnimating = false;
