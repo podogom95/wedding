@@ -1139,22 +1139,77 @@ if (galleryViewer) {
 
                 ignoreClick = true;
 
+                const width =
+                    galleryViewer.offsetWidth;
 
-                if (diff < 0) {
+                const direction =
+                    diff < 0 ? "next" : "prev";
 
-                    showImage(
-                        currentIndex + 1,
-                        "next"
-                    );
+                const nextIndex =
+                    direction === "next"
+                        ? (currentIndex + 1) % galleryImages.length
+                        : (currentIndex - 1 + galleryImages.length) %
+                          galleryImages.length;
+
+
+                // 현재 위치에서 그대로 이어서 화면 끝까지 이동
+                galleryViewerImg.classList.add("animating");
+                galleryViewerImgNext.classList.add("animating");
+
+
+                if (direction === "next") {
+
+                    // 현재 사진 → 왼쪽으로 완전히 이동
+                    galleryViewerImg.style.transform =
+                        `translateX(-${width}px)`;
+
+                    // 다음 사진 → 화면 중앙
+                    galleryViewerImgNext.style.transform =
+                        "translateX(0)";
 
                 } else {
 
-                    showImage(
-                        currentIndex - 1,
-                        "prev"
-                    );
+                    // 현재 사진 → 오른쪽으로 완전히 이동
+                    galleryViewerImg.style.transform =
+                        `translateX(${width}px)`;
+
+                    // 이전 사진 → 화면 중앙
+                    galleryViewerImgNext.style.transform =
+                        "translateX(0)";
 
                 }
+
+
+                // 애니메이션이 끝난 뒤 실제 이미지 교체
+                setTimeout(() => {
+
+                    currentIndex = nextIndex;
+
+                    galleryViewerImg.src =
+                        galleryImages[currentIndex].dataset.full;
+
+                    galleryViewerImg.style.transform =
+                        "translateX(0)";
+
+                    galleryViewerImg.style.opacity =
+                        "1";
+
+                    galleryViewerImgNext.style.transform =
+                        "translateX(0)";
+
+                    galleryViewerImgNext.style.opacity =
+                        "0";
+
+                    galleryViewerImg.classList.remove("animating");
+                    galleryViewerImgNext.classList.remove("animating");
+
+                    swipeCurrentX = 0;
+
+                    resetZoom();
+
+                    preloadNearbyImages(currentIndex);
+
+                }, 650);
 
 
                 setTimeout(() => {
