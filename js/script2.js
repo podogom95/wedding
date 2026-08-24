@@ -452,7 +452,7 @@ function preloadNearbyImages(index) {
 // 사진 변경
 // ==================================================
 
-async function showImage(index, direction) {
+function showImage(index, direction) {
 
     if (
         isAnimating ||
@@ -492,7 +492,7 @@ async function showImage(index, direction) {
 
 
     // 캐시에 없으면 preload
-    await preloadImage(index);
+    preloadImage(index);
 
 
     // 캐시에 저장된 이미지 사용
