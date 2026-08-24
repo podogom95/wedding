@@ -54,7 +54,6 @@ function copyText(text) {
 
 const bgm = document.getElementById("bgm");
 const musicButton = document.getElementById("musicButton");
-const intro = document.querySelector(".intro");
 
 let musicStarted = false;
 
@@ -65,7 +64,7 @@ let musicStarted = false;
 
 function playMusic() {
 
-    if (!bgm) return;
+    if (!bgm || musicStarted) return;
 
     bgm.play()
         .then(() => {
@@ -128,33 +127,41 @@ if (musicButton && bgm) {
 }
 
 
-// --------------------------------------------------
-// 첫 번째 Hero 카드 터치 → 음악 시작
-// --------------------------------------------------
+// ==================================================
+// 첫 사용자 동작 → 음악 시작
+// ==================================================
 
-if (intro && bgm) {
+function startMusicFromUserInteraction() {
 
-    intro.addEventListener("touchstart", () => {
+    if (!bgm || musicStarted) return;
 
-        if (!musicStarted) {
-            playMusic();
-        }
-
-    }, {
-        passive: true
-    });
-
-
-    // PC 테스트용
-    intro.addEventListener("click", () => {
-
-        if (!musicStarted) {
-            playMusic();
-        }
-
-    });
+    playMusic();
 
 }
+
+
+// --------------------------------------------------
+// 모바일
+// 화면을 터치하거나 스크롤을 시작하는 순간
+// --------------------------------------------------
+
+document.addEventListener(
+    "touchstart",
+    startMusicFromUserInteraction,
+    {
+        passive: true
+    }
+);
+
+
+// --------------------------------------------------
+// PC
+// --------------------------------------------------
+
+document.addEventListener(
+    "pointerdown",
+    startMusicFromUserInteraction
+);
 
 
 // ==================================================
