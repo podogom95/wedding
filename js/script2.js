@@ -606,6 +606,8 @@ function finishSwipe(index, direction, diff) {
 
     galleryViewerImgNext.src = nextSrc;
 
+    galleryViewerImgNext.style.opacity = "1";
+
     galleryViewerImg.classList.add("animating");
     galleryViewerImgNext.classList.add("animating");
 
