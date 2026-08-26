@@ -299,6 +299,10 @@ let panStartY = 0;
 let panStartTranslateX = 0;
 let panStartTranslateY = 0;
 
+// 핀치 시작 위치
+let pinchOriginX = 50;
+let pinchOriginY = 50;
+
 
 // ==================================================
 // 이미지 transform 적용
@@ -756,6 +760,29 @@ if (galleryViewer) {
 
                 pinchStartScale = scale;
 
+                const rect =
+                    galleryViewerImg.getBoundingClientRect();
+
+                const centerX =
+                    (
+                        event.touches[0].clientX +
+                        event.touches[1].clientX
+                    ) / 2;
+
+                const centerY =
+                    (
+                        event.touches[0].clientY +
+                        event.touches[1].clientY
+                    ) / 2;
+
+                pinchOriginX =
+                    ((centerX - rect.left) / rect.width) * 100;
+
+                pinchOriginY =
+                    ((centerY - rect.top) / rect.height) * 100;
+
+                galleryViewerImg.style.transformOrigin =
+                    `${pinchOriginX}% ${pinchOriginY}%`;
             }
 
 
@@ -865,30 +892,6 @@ if (galleryViewer) {
                             pinchStartScale * ratio
                         )
                     );
-
-                const rect =
-                    galleryViewerImg.getBoundingClientRect();
-
-                const centerX =
-                    (
-                        event.touches[0].clientX +
-                        event.touches[1].clientX
-                    ) / 2;
-
-                const centerY =
-                    (
-                        event.touches[0].clientY +
-                        event.touches[1].clientY
-                    ) / 2;
-
-                const originX =
-                    ((centerX - rect.left) / rect.width) * 100;
-
-                const originY =
-                    ((centerY - rect.top) / rect.height) * 100;
-
-                galleryViewerImg.style.transformOrigin =
-                    `${originX}% ${originY}%`;
 
                 scale = newScale;
 
