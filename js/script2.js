@@ -360,11 +360,19 @@ function centerImage() {
 
     galleryViewerImg.classList.add("animating");
 
+    // 확대 상태 종료
+    scale = 1;
+
+    // 이미지 위치 중앙으로 복귀
     translateX = 0;
     translateY = 0;
 
+    // transform 기준점도 중앙으로 복귀
+    galleryViewerImg.style.transformOrigin =
+        "center center";
+
     galleryViewerImg.style.transform =
-        `translate(0px, 0px) scale(${scale})`;
+        "translate(0px, 0px) scale(1)";
 
     setTimeout(() => {
 
@@ -1142,6 +1150,18 @@ if (galleryViewer) {
                 updateImageTransform();
 
                 return;
+            }
+
+            // ==================================================
+            // 줌다운 완료 → 이미지 중앙 복귀
+            // ==================================================
+
+            if (scale === MIN_SCALE) {
+
+                centerImage();
+
+                return;
+
             }
 
 
