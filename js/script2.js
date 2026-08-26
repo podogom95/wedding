@@ -955,6 +955,42 @@ if (galleryViewer) {
                     panStartTranslateY + moveY;
 
 
+                // --------------------------------------------------
+                // 확대 이미지가 화면 밖으로 너무 이동하지 않도록 제한
+                // --------------------------------------------------
+
+                const width =
+                    galleryViewer.offsetWidth;
+
+                const height =
+                    galleryViewer.offsetHeight;
+
+                const maxX =
+                    width * (scale - 1) / 2;
+
+                const maxY =
+                    height * (scale - 1) / 2;
+
+
+                translateX =
+                    Math.max(
+                        -maxX,
+                        Math.min(
+                            maxX,
+                            translateX
+                        )
+                    );
+
+                translateY =
+                    Math.max(
+                        -maxY,
+                        Math.min(
+                            maxY,
+                            translateY
+                        )
+                    );
+
+
                 updateImageTransform();
 
                 return;
