@@ -361,25 +361,54 @@ function centerImage() {
 
     if (!galleryViewerImg) return;
 
+    // --------------------------------------------------
+    // 줌다운 애니메이션 시작
+    // --------------------------------------------------
+
     galleryViewerImg.classList.add("animating");
 
-    // 확대 상태 종료
-    scale = 1;
 
-    // 이미지 위치 중앙으로 복귀
+    // --------------------------------------------------
+    // 이미지 위치를 중앙으로 이동
+    // --------------------------------------------------
+
     translateX = 0;
     translateY = 0;
 
-    // transform 기준점도 중앙으로 복귀
-    galleryViewerImg.style.transformOrigin =
-        "center center";
+
+    // --------------------------------------------------
+    // 배율을 1배율로 변경
+    // --------------------------------------------------
+
+    scale = 1;
+
+
+    // --------------------------------------------------
+    // 현재 transformOrigin은 그대로 유지
+    //
+    // 바로 center center로 바꾸면
+    // 이미지가 순간적으로 튀는 현상이 생길 수 있음
+    // --------------------------------------------------
 
     galleryViewerImg.style.transform =
         "translate(0px, 0px) scale(1)";
 
+
+    // --------------------------------------------------
+    // 애니메이션 완료
+    // --------------------------------------------------
+
     setTimeout(() => {
 
-        galleryViewerImg.classList.remove("animating");
+        // 애니메이션이 끝난 뒤
+        // transform 기준점을 중앙으로 복귀
+
+        galleryViewerImg.style.transformOrigin =
+            "center center";
+
+        galleryViewerImg.classList.remove(
+            "animating"
+        );
 
     }, 300);
 
