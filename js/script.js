@@ -853,6 +853,10 @@ if (galleryViewer) {
 
                 wasPinching = true;
 
+                // 기존 한 손가락 제스처 무효화
+                isDragging = false;
+                swipeCurrentX = 0;
+
                 // 핀치 시작 시 두 손가락 사이 거리 저장
 
                 pinchStartDistance =
@@ -925,25 +929,25 @@ if (galleryViewer) {
             // ------------------------------------------
             // 한 손가락
             // ------------------------------------------
-
-            if (event.touches.length !== 1) {
+            
+            // 핀치가 끝나기 전까지는
+            // 한 손가락 pan/swipe로 전환하지 않음
+            if (event.touches.length !== 1 || wasPinching) {
                 return;
             }
-
-
+            
             touchStartX =
                 event.touches[0].clientX;
-
+            
             touchStartY =
                 event.touches[0].clientY;
-
+            
             touchCurrentX =
                 touchStartX;
-
+            
             touchCurrentY =
                 touchStartY;
-
-
+            
             isDragging = true;
 
 
@@ -1371,18 +1375,33 @@ if (galleryViewer) {
             if (wasPinching) {
 
                 wasPinching = false;
-
-
+            
+                // 핀치 종료 후 남아 있는
+                // 한 손가락 이동 상태를 완전히 제거
+                isDragging = false;
+            
+                touchStartX = 0;
+                touchStartY = 0;
+                touchCurrentX = 0;
+                touchCurrentY = 0;
+            
+                panStartX = 0;
+                panStartY = 0;
+            
+                panStartTranslateX = translateX;
+                panStartTranslateY = translateY;
+            
+                swipeCurrentX = 0;
+            
                 if (scale <= MIN_SCALE) {
-
+            
                     centerImage();
-
-                    return;
-
+            
                 }
-
+            
+                return;
+            
             }
-
 
             if (!isDragging) {
                 return;
