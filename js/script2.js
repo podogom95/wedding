@@ -306,6 +306,20 @@ let pinchStartDistance = 0;
 let pinchStartScale = 1;
 
 
+// --------------------------------------------------
+// 핀치 기준점
+// --------------------------------------------------
+
+// 두 손가락 사이의 화면상 중심점
+let pinchCenterX = 0;
+let pinchCenterY = 0;
+
+// 핀치 시작 당시 중심점에 대응하는
+// 이미지 내부의 위치
+let pinchLocalX = 0;
+let pinchLocalY = 0;
+
+
 // 실제로 핀치 동작을 했는지 여부
 
 let wasPinching = false;
@@ -839,6 +853,8 @@ if (galleryViewer) {
 
                 wasPinching = true;
 
+                // 핀치 시작 시 두 손가락 사이 거리 저장
+
                 pinchStartDistance =
                     getTouchDistance(
                         event.touches[0],
@@ -847,40 +863,62 @@ if (galleryViewer) {
 
                 pinchStartScale = scale;
 
+                // 두 손가락 사이 중심점 계산
 
-                const rect =
-                    galleryViewerImg.getBoundingClientRect();
-
-
-                const centerX =
+                pinchCenterX =
                     (
                         event.touches[0].clientX +
                         event.touches[1].clientX
                     ) / 2;
 
-                const centerY =
+                pinchCenterY =
                     (
                         event.touches[0].clientY +
                         event.touches[1].clientY
                     ) / 2;
 
+                // 현재 이미지의 화면 중심
+
+                const viewerRect =
+                    galleryViewer.getBoundingClientRect();
+
+                const imageCenterX =
+                    viewerRect.left +
+                    viewerRect.width / 2;
+
+                const imageCenterY =
+                    viewerRect.top +
+                    viewerRect.height / 2;
+
 
                 // --------------------------------------------------
-                // 핀치 시작 중심점을 저장
+                // 핀치 중심점에 대응하는
+                // 이미지 내부 좌표를 저장
+                //
+                // 이후 확대 배율이 바뀌더라도
+                // 이 지점이 손가락 중심 아래에 있도록 유지
                 // --------------------------------------------------
 
-                touchStartX = centerX;
-                touchStartY = centerY;
+                pinchLocalX =
+                    (
+                        pinchCenterX -
+                        imageCenterX -
+                        translateX
+                    ) / scale;
 
+                pinchLocalY =
+                    (
+                        pinchCenterY -
+                        imageCenterY -
+                        translateY
+                    ) / scale;
 
-                pinchOriginX =
-                    ((centerX - rect.left) / rect.width) * 100;
+                
+                // 기존 스와이프 시작 좌표도
+                // 핀치 중심점 기준으로 맞춰둠
 
-                pinchOriginY =
-                    ((centerY - rect.top) / rect.height) * 100;
-
-                galleryViewerImg.style.transformOrigin =
-                    `${pinchOriginX}% ${pinchOriginY}%`;
+                touchStartX = pinchCenterX;
+                touchStartY = pinchCenterY;
             }
 
 
@@ -1008,23 +1046,85 @@ if (galleryViewer) {
 
 
                 // --------------------------------------------------
-                // 핀치 중에는 줌만 변경
-                // 이미지 위치는 변경하지 않음
+                // 새로운 배율 적용
                 // --------------------------------------------------
 
                 scale = newScale;
 
 
                 // --------------------------------------------------
-                // 1배율이 되면 위치를 중앙으로 복귀
+                // 핀치 중심점에 있던 이미지 위치가
+                // 계속 손가락 중심 아래에 있도록 translation 보정
                 // --------------------------------------------------
 
-                if (scale === MIN_SCALE) {
+                const viewerRect =
+                    galleryViewer.getBoundingClientRect();
+
+                const imageCenterX =
+                    viewerRect.left +
+                    viewerRect.width / 2;
+
+                const imageCenterY =
+                    viewerRect.top +
+                    viewerRect.height / 2;
+
+
+                if (scale > MIN_SCALE) {
+
+                    translateX =
+                        pinchCenterX -
+                        imageCenterX -
+                        pinchLocalX * scale;
+
+                    translateY =
+                        pinchCenterY -
+                        imageCenterY -
+                        pinchLocalY * scale;
+
+                } else {
 
                     translateX = 0;
                     translateY = 0;
 
                 }
+
+
+                // --------------------------------------------------
+                // 확대된 이미지가 화면 밖으로
+                // 무한정 이동하지 않도록 제한
+                // --------------------------------------------------
+
+                const width =
+                    galleryViewer.offsetWidth;
+
+                const height =
+                    galleryViewer.offsetHeight;
+
+                const maxX =
+                    width * (scale - 1) / 2;
+
+                const maxY =
+                    height * (scale - 1) / 2;
+
+
+                translateX =
+                    Math.max(
+                        -maxX,
+                        Math.min(
+                            maxX,
+                            translateX
+                        )
+                    );
+
+                translateY =
+                    Math.max(
+                        -maxY,
+                        Math.min(
+                            maxY,
+                            translateY
+                        )
+                    );
+
 
 
                 // --------------------------------------------------
