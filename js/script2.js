@@ -39,10 +39,14 @@ function copyText(text) {
 
     navigator.clipboard.writeText(text)
         .then(() => {
+
             console.log("계좌번호 복사 완료");
+
         })
         .catch(error => {
+
             console.log("계좌번호 복사 실패:", error);
+
         });
 
 }
@@ -198,6 +202,7 @@ let savedScrollY = 0;
 
 let isAnimating = false;
 
+
 // ==================================================
 // 원본 이미지 캐시
 // ==================================================
@@ -218,12 +223,12 @@ function preloadImage(index) {
         return Promise.resolve(null);
     }
 
-
     const src =
         galleryImages[index].dataset.full;
 
 
     // 이미 캐시에 있으면 기존 Promise 반환
+
     if (imageCache.has(src)) {
 
         return imageCache.get(src).promise;
@@ -242,10 +247,14 @@ function preloadImage(index) {
             : new Promise(resolve => {
 
                 if (img.complete) {
+
                     resolve();
+
                 } else {
+
                     img.onload = resolve;
                     img.onerror = resolve;
+
                 }
 
             });
@@ -261,6 +270,7 @@ function preloadImage(index) {
 
 }
 
+
 let isDragging = false;
 
 let touchStartX = 0;
@@ -271,7 +281,9 @@ let touchCurrentY = 0;
 
 let ignoreClick = false;
 
+
 // 스와이프 중 현재 이미지 이동 거리
+
 let swipeCurrentX = 0;
 
 
@@ -289,20 +301,27 @@ let translateY = 0;
 
 
 // 핀치 시작 시점
+
 let pinchStartDistance = 0;
 let pinchStartScale = 1;
 
+
 // 실제로 핀치 동작을 했는지 여부
+
 let wasPinching = false;
 
+
 // 확대 상태에서 한 손가락 이동 시작 위치
+
 let panStartX = 0;
 let panStartY = 0;
 
 let panStartTranslateX = 0;
 let panStartTranslateY = 0;
 
+
 // 핀치 시작 위치
+
 let pinchOriginX = 50;
 let pinchOriginY = 50;
 
@@ -341,17 +360,19 @@ function resetZoom() {
     panStartTranslateX = 0;
     panStartTranslateY = 0;
 
+
     if (galleryViewerImg) {
 
         galleryViewerImg.style.transform =
             "translate(0, 0) scale(1)";
-        
+
         galleryViewerImg.style.transformOrigin =
             "center center";
 
     }
 
 }
+
 
 // ==================================================
 // 확대 축소 후 이미지 중앙 정렬
@@ -370,7 +391,7 @@ function centerImage() {
 
     const currentTranslateX = translateX;
     const currentTranslateY = translateY;
-    
+
 
     // --------------------------------------------------
     // 보정된 현재 위치를 먼저 적용
@@ -406,7 +427,6 @@ function centerImage() {
             translateX = 0;
             translateY = 0;
 
-
             galleryViewerImg.style.transform =
                 "translate(0px, 0px) scale(1)";
 
@@ -429,6 +449,7 @@ function centerImage() {
 
 }
 
+
 // ==================================================
 // 갤러리 열기
 // ==================================================
@@ -443,10 +464,12 @@ function openGallery(index) {
         return;
     }
 
+
     currentIndex = index;
 
     const currentSrc =
-    galleryImages[currentIndex].dataset.full;
+        galleryImages[currentIndex].dataset.full;
+
 
     galleryViewerImg.src = currentSrc;
 
@@ -473,6 +496,7 @@ function openGallery(index) {
 
 
     // Android / iPhone 뒤로가기 처리
+
     history.pushState(
         { gallery: true },
         "",
@@ -567,6 +591,7 @@ function preloadNearbyImages(index) {
 
 }
 
+
 // ==================================================
 // 사진 변경
 // ==================================================
@@ -584,12 +609,14 @@ function showImage(index, direction) {
 
 
     // 마지막 → 첫 번째
+
     if (index >= galleryImages.length) {
         index = 0;
     }
 
 
     // 첫 번째 → 마지막
+
     if (index < 0) {
         index = galleryImages.length - 1;
     }
@@ -597,16 +624,19 @@ function showImage(index, direction) {
 
     isAnimating = true;
 
-        const width =
+
+    const width =
         galleryViewer.offsetWidth;
 
     const nextSrc =
         galleryImages[index].dataset.full;
 
+
     preloadImage(index);
 
 
     // 다음 이미지 준비
+
     galleryViewerImgNext.src = nextSrc;
 
     galleryViewerImg.classList.add("animating");
@@ -616,6 +646,7 @@ function showImage(index, direction) {
 
 
     // 현재 사진만 슬라이드
+
     if (direction === "next") {
 
         galleryViewerImg.style.transform =
@@ -630,6 +661,7 @@ function showImage(index, direction) {
 
 
     // 다음 사진은 중앙에 고정
+
     galleryViewerImgNext.style.transform =
         "translate3d(0, 0, 0)";
 
@@ -665,7 +697,9 @@ function showImage(index, direction) {
         preloadNearbyImages(currentIndex);
 
     }, 650);
+
 }
+
 
 // ==================================================
 // 갤러리 썸네일 클릭
@@ -808,6 +842,7 @@ if (galleryViewer) {
             if (event.touches.length === 2) {
 
                 // 핀치 동작 시작
+
                 wasPinching = true;
 
                 pinchStartDistance =
@@ -818,8 +853,10 @@ if (galleryViewer) {
 
                 pinchStartScale = scale;
 
+
                 const rect =
                     galleryViewerImg.getBoundingClientRect();
+
 
                 const centerX =
                     (
@@ -833,6 +870,7 @@ if (galleryViewer) {
                         event.touches[1].clientY
                     ) / 2;
 
+
                 // --------------------------------------------------
                 // 핀치 시작 중심점을 저장
                 // --------------------------------------------------
@@ -840,14 +878,17 @@ if (galleryViewer) {
                 touchStartX = centerX;
                 touchStartY = centerY;
 
+
                 pinchOriginX =
                     ((centerX - rect.left) / rect.width) * 100;
 
                 pinchOriginY =
                     ((centerY - rect.top) / rect.height) * 100;
 
+
                 galleryViewerImg.style.transformOrigin =
                     `${pinchOriginX}% ${pinchOriginY}%`;
+
             }
 
 
@@ -952,23 +993,6 @@ if (galleryViewer) {
 
 
                 // --------------------------------------------------
-                // 현재 두 손가락 중심점 계산
-                // --------------------------------------------------
-
-                const currentCenterX =
-                    (
-                        event.touches[0].clientX +
-                        event.touches[1].clientX
-                    ) / 2;
-            
-                const currentCenterY =
-                    (
-                        event.touches[0].clientY +
-                        event.touches[1].clientY
-                    ) / 2;
-
-
-                // --------------------------------------------------
                 // 핀치 확대 비율 계산
                 // --------------------------------------------------
 
@@ -976,6 +1000,10 @@ if (galleryViewer) {
                     currentDistance /
                     pinchStartDistance;
 
+
+                // --------------------------------------------------
+                // 현재 확대 배율 계산
+                // --------------------------------------------------
 
                 const newScale =
                     Math.max(
@@ -988,49 +1016,15 @@ if (galleryViewer) {
 
 
                 // --------------------------------------------------
-                // 확대 전 → 현재 확대 배율
-                // --------------------------------------------------
-
-                const scaleRatio =
-                    newScale /
-                    pinchStartScale;
-
-
-                // --------------------------------------------------
-                // 핀치 시작점에서 이미지가 확대되면서
-                // 이동해야 하는 거리 계산
-                // --------------------------------------------------
-
-                const moveX =
-                    (currentCenterX - touchStartX) *
-                    (1 - scaleRatio);
-
-                const moveY =
-                    (currentCenterY - touchStartY) *
-                    (1 - scaleRatio);
-
-
-                // --------------------------------------------------
-                // 현재 확대 배율 적용
+                // 핀치 중에는 줌만 변경
+                // 이미지 위치는 변경하지 않음
                 // --------------------------------------------------
 
                 scale = newScale;
 
 
                 // --------------------------------------------------
-                // 핀치 중심점이 손가락을 따라가도록
-                // 이미지 위치 보정
-                // --------------------------------------------------
-
-                translateX =
-                    moveX;
-
-                translateY =
-                    moveY;
-
-
-                // --------------------------------------------------
-                // 최소 배율에서는 중앙으로 복귀
+                // 1배율이 되면 위치를 중앙으로 복귀
                 // --------------------------------------------------
 
                 if (scale === MIN_SCALE) {
@@ -1048,6 +1042,7 @@ if (galleryViewer) {
                 updateImageTransform();
 
                 return;
+
             }
 
 
@@ -1131,6 +1126,7 @@ if (galleryViewer) {
                 updateImageTransform();
 
                 return;
+
             }
 
 
@@ -1156,9 +1152,12 @@ if (galleryViewer) {
                     )
                 );
 
+
             swipeCurrentX = limitedDiff;
 
+
             // 현재 사진 이동
+
             galleryViewerImg.style.transform =
                 `translate3d(${limitedDiff}px, 0, 0)`;
 
@@ -1175,6 +1174,7 @@ if (galleryViewer) {
 
 
                 // 다음 이미지가 아직 캐시에 없다면 로딩 시작
+
                 preloadImage(nextIndex);
 
 
@@ -1213,6 +1213,7 @@ if (galleryViewer) {
 
 
                 // 이전 이미지가 아직 캐시에 없다면 로딩 시작
+
                 preloadImage(prevIndex);
 
 
@@ -1279,6 +1280,7 @@ if (galleryViewer) {
 
                 wasPinching = false;
 
+
                 if (scale <= MIN_SCALE) {
 
                     centerImage();
@@ -1342,6 +1344,7 @@ if (galleryViewer) {
                 updateImageTransform();
 
                 return;
+
             }
 
 
@@ -1365,19 +1368,23 @@ if (galleryViewer) {
 
                 ignoreClick = true;
 
+
                 if (diff < 0) {
+
                     showImage(
                         currentIndex + 1,
                         "next"
                     );
 
                 } else {
+
                     showImage(
                         currentIndex - 1,
                         "prev"
                     );
 
                 }
+
 
                 setTimeout(() => {
 
@@ -1406,7 +1413,6 @@ if (galleryViewer) {
                 galleryViewerImg.style.transform =
                     "translateX(0)";
 
-
                 galleryViewerImgNext.style.transform =
                     "translateX(0)";
 
@@ -1432,6 +1438,7 @@ if (galleryViewer) {
     );
 
 }
+
 
 // ==================================================
 // 브라우저 뒤로가기
