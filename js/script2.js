@@ -292,6 +292,9 @@ let translateY = 0;
 let pinchStartDistance = 0;
 let pinchStartScale = 1;
 
+// 실제로 핀치 동작을 했는지 여부
+let wasPinching = false;
+
 // 확대 상태에서 한 손가락 이동 시작 위치
 let panStartX = 0;
 let panStartY = 0;
@@ -760,6 +763,9 @@ if (galleryViewer) {
 
             if (event.touches.length === 2) {
 
+                // 핀치 동작 시작
+                wasPinching = true;
+
                 pinchStartDistance =
                     getTouchDistance(
                         event.touches[0],
@@ -1134,6 +1140,25 @@ if (galleryViewer) {
             pinchStartDistance = 0;
 
 
+            // ==================================================
+            // 핀치 종료 후 줌다운 → 중앙 복귀
+            // ==================================================
+
+            if (wasPinching) {
+
+                wasPinching = false;
+
+                if (scale <= MIN_SCALE) {
+
+                    centerImage();
+
+                    return;
+
+                }
+
+            }
+
+
             if (!isDragging) {
                 return;
             }
@@ -1186,18 +1211,6 @@ if (galleryViewer) {
                 updateImageTransform();
 
                 return;
-            }
-
-            // ==================================================
-            // 줌다운 완료 → 이미지 중앙 복귀
-            // ==================================================
-
-            if (scale === MIN_SCALE) {
-
-                centerImage();
-
-                return;
-
             }
 
 
