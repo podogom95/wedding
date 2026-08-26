@@ -745,8 +745,6 @@ if (galleryViewer) {
 
             if (event.touches.length === 2) {
 
-                isDragging = false;
-
                 pinchStartDistance =
                     getTouchDistance(
                         event.touches[0],
@@ -755,15 +753,13 @@ if (galleryViewer) {
 
                 pinchStartScale = scale;
 
-                galleryViewerImg.classList.remove(
-                    "animating"
-                );
+                pinchCenterX =
+                    (event.touches[0].clientX +
+                     event.touches[1].clientX) / 2;
 
-                galleryViewerImgNext.classList.remove(
-                    "animating"
-                );
-
-                return;
+                pinchCenterY =
+                    (event.touches[0].clientY +
+                     event.touches[1].clientY) / 2;
             }
 
 
@@ -855,40 +851,44 @@ if (galleryViewer) {
                     return;
                 }
 
-
                 const currentDistance =
                     getTouchDistance(
                         event.touches[0],
                         event.touches[1]
                     );
 
-
                 const ratio =
                     currentDistance /
                     pinchStartDistance;
 
-
-                scale =
-                    pinchStartScale * ratio;
-
-
-                scale =
+                const newScale =
                     Math.max(
                         MIN_SCALE,
                         Math.min(
                             MAX_SCALE,
-                            scale
+                            pinchStartScale * ratio
                         )
                     );
 
-                // 축소해서 원본 크기로 돌아오면
-                // 위치도 중앙으로 초기화
+                const scaleRatio =
+                    newScale / scale;
+
+                translateX =
+                    pinchCenterX -
+                    (pinchCenterX - translateX) *
+                    scaleRatio;
+
+                translateY =
+                    pinchCenterY -
+                    (pinchCenterY - translateY) *
+                    scaleRatio;
+
+                scale = newScale;
+
                 if (scale === MIN_SCALE) {
                     translateX = 0;
                     translateY = 0;
-
                 }
-
 
                 updateImageTransform();
 
