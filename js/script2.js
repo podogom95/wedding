@@ -370,74 +370,7 @@ function centerImage() {
 
     const currentTranslateX = translateX;
     const currentTranslateY = translateY;
-
-
-    // --------------------------------------------------
-    // 현재 이미지의 실제 크기
-    // --------------------------------------------------
-
-    const rect =
-        galleryViewerImg.getBoundingClientRect();
-
-
-    // --------------------------------------------------
-    // 현재 transform-origin 위치를
-    // 실제 화면 좌표로 계산
-    // --------------------------------------------------
-
-    const originX =
-        rect.left +
-        rect.width *
-        (pinchOriginX / 100);
-
-    const originY =
-        rect.top +
-        rect.height *
-        (pinchOriginY / 100);
-
-
-    // --------------------------------------------------
-    // 이미지 중앙 위치
-    // --------------------------------------------------
-
-    const centerX =
-        rect.left +
-        rect.width / 2;
-
-    const centerY =
-        rect.top +
-        rect.height / 2;
-
-
-    // --------------------------------------------------
-    // transform-origin을 중앙으로 변경하면서
-    // 기존 이미지 위치가 순간적으로 튀지 않도록
-    // translate를 보정
-    // --------------------------------------------------
-
-    const correctionX =
-        (1 - currentScale) *
-        (originX - centerX);
-
-    const correctionY =
-        (1 - currentScale) *
-        (originY - centerY);
-
-
-    translateX =
-        currentTranslateX + correctionX;
-
-    translateY =
-        currentTranslateY + correctionY;
-
-
-    // --------------------------------------------------
-    // 기준점을 중앙으로 변경
-    // --------------------------------------------------
-
-    galleryViewerImg.style.transformOrigin =
-        "center center";
-
+    
 
     // --------------------------------------------------
     // 보정된 현재 위치를 먼저 적용
