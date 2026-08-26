@@ -460,7 +460,7 @@ function centerImage() {
         requestAnimationFrame(() => {
 
             galleryViewerImg.classList.add(
-                "animating"
+                "zoom-reset"
             );
 
 
@@ -485,7 +485,7 @@ function centerImage() {
             setTimeout(() => {
 
                 galleryViewerImg.classList.remove(
-                    "animating"
+                    "zoom-reset"
                 );
 
             }, 300);
