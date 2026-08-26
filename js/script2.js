@@ -338,6 +338,9 @@ function resetZoom() {
 
         galleryViewerImg.style.transform =
             "translate(0, 0) scale(1)";
+        
+        galleryViewerImg.style.transformOrigin =
+            "center center";
 
     }
 
@@ -753,13 +756,6 @@ if (galleryViewer) {
 
                 pinchStartScale = scale;
 
-                pinchCenterX =
-                    (event.touches[0].clientX +
-                     event.touches[1].clientX) / 2;
-
-                pinchCenterY =
-                    (event.touches[0].clientY +
-                     event.touches[1].clientY) / 2;
             }
 
 
@@ -870,18 +866,29 @@ if (galleryViewer) {
                         )
                     );
 
-                const scaleRatio =
-                    newScale / scale;
+                const rect =
+                    galleryViewerImg.getBoundingClientRect();
 
-                translateX =
-                    pinchCenterX -
-                    (pinchCenterX - translateX) *
-                    scaleRatio;
+                const centerX =
+                    (
+                        event.touches[0].clientX +
+                        event.touches[1].clientX
+                    ) / 2;
 
-                translateY =
-                    pinchCenterY -
-                    (pinchCenterY - translateY) *
-                    scaleRatio;
+                const centerY =
+                    (
+                        event.touches[0].clientY +
+                        event.touches[1].clientY
+                    ) / 2;
+
+                const originX =
+                    ((centerX - rect.left) / rect.width) * 100;
+
+                const originY =
+                    ((centerY - rect.top) / rect.height) * 100;
+
+                galleryViewerImg.style.transformOrigin =
+                    `${originX}% ${originY}%`;
 
                 scale = newScale;
 
