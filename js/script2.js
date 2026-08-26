@@ -1006,27 +1006,6 @@ if (galleryViewer) {
                         )
                     );
 
-                    // --------------------------------------------------
-                    // 핀치 시작 위치를 기준으로
-                    // 이미지가 확대되는 만큼 위치 보정
-                    //
-                    // 중요:
-                    // 현재 손가락 중심점은 사용하지 않음
-                    // → 핀치 중 이미지가 손가락을 따라 튀지 않음
-                    // --------------------------------------------------
-
-                    if (pinchStartScale === 1) {
-
-                        translateX =
-                            (galleryViewer.offsetWidth / 2 - touchStartX)
-                            * (scaleRatio - 1);
-
-                        translateY =
-                            (galleryViewer.offsetHeight / 2 - touchStartY)
-                            * (scaleRatio - 1);
-
-                    }
-
 
                 // --------------------------------------------------
                 // 핀치 중에는 줌만 변경
