@@ -879,6 +879,8 @@ if (galleryViewer) {
                 pinchOriginY =
                     ((centerY - rect.top) / rect.height) * 100;
 
+                galleryViewerImg.style.transformOrigin =
+                    `${pinchOriginX}% ${pinchOriginY}%`;
             }
 
 
@@ -1003,6 +1005,27 @@ if (galleryViewer) {
                             pinchStartScale * ratio
                         )
                     );
+
+                    // --------------------------------------------------
+                    // 핀치 시작 위치를 기준으로
+                    // 이미지가 확대되는 만큼 위치 보정
+                    //
+                    // 중요:
+                    // 현재 손가락 중심점은 사용하지 않음
+                    // → 핀치 중 이미지가 손가락을 따라 튀지 않음
+                    // --------------------------------------------------
+
+                    if (pinchStartScale === 1) {
+
+                        translateX =
+                            (galleryViewer.offsetWidth / 2 - touchStartX)
+                            * (scaleRatio - 1);
+
+                        translateY =
+                            (galleryViewer.offsetHeight / 2 - touchStartY)
+                            * (scaleRatio - 1);
+
+                    }
 
 
                 // --------------------------------------------------
