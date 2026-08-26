@@ -361,56 +361,138 @@ function centerImage() {
 
     if (!galleryViewerImg) return;
 
-    // --------------------------------------------------
-    // 줌다운 애니메이션 시작
-    // --------------------------------------------------
-
-    galleryViewerImg.classList.add("animating");
-
 
     // --------------------------------------------------
-    // 이미지 위치를 중앙으로 이동
+    // 현재 확대 상태 저장
     // --------------------------------------------------
 
-    translateX = 0;
-    translateY = 0;
+    const currentScale = scale;
+
+    const currentTranslateX = translateX;
+    const currentTranslateY = translateY;
 
 
     // --------------------------------------------------
-    // 배율을 1배율로 변경
+    // 현재 이미지의 실제 크기
     // --------------------------------------------------
 
-    scale = 1;
+    const rect =
+        galleryViewerImg.getBoundingClientRect();
 
 
     // --------------------------------------------------
-    // 현재 transformOrigin은 그대로 유지
-    //
-    // 바로 center center로 바꾸면
-    // 이미지가 순간적으로 튀는 현상이 생길 수 있음
+    // 현재 transform-origin 위치를
+    // 실제 화면 좌표로 계산
     // --------------------------------------------------
+
+    const originX =
+        rect.left +
+        rect.width *
+        (pinchOriginX / 100);
+
+    const originY =
+        rect.top +
+        rect.height *
+        (pinchOriginY / 100);
+
+
+    // --------------------------------------------------
+    // 이미지 중앙 위치
+    // --------------------------------------------------
+
+    const centerX =
+        rect.left +
+        rect.width / 2;
+
+    const centerY =
+        rect.top +
+        rect.height / 2;
+
+
+    // --------------------------------------------------
+    // transform-origin을 중앙으로 변경하면서
+    // 기존 이미지 위치가 순간적으로 튀지 않도록
+    // translate를 보정
+    // --------------------------------------------------
+
+    const correctionX =
+        (1 - currentScale) *
+        (originX - centerX);
+
+    const correctionY =
+        (1 - currentScale) *
+        (originY - centerY);
+
+
+    translateX =
+        currentTranslateX + correctionX;
+
+    translateY =
+        currentTranslateY + correctionY;
+
+
+    // --------------------------------------------------
+    // 기준점을 중앙으로 변경
+    // --------------------------------------------------
+
+    galleryViewerImg.style.transformOrigin =
+        "center center";
+
+
+    // --------------------------------------------------
+    // 보정된 현재 위치를 먼저 적용
+    // --------------------------------------------------
+
+    galleryViewerImg.classList.remove(
+        "animating"
+    );
 
     galleryViewerImg.style.transform =
-        "translate(0px, 0px) scale(1)";
+        `translate(${translateX}px, ${translateY}px) scale(${currentScale})`;
 
 
     // --------------------------------------------------
-    // 애니메이션 완료
+    // 브라우저가 현재 위치를 적용하도록 한 프레임 대기
     // --------------------------------------------------
 
-    setTimeout(() => {
+    requestAnimationFrame(() => {
 
-        // 애니메이션이 끝난 뒤
-        // transform 기준점을 중앙으로 복귀
+        requestAnimationFrame(() => {
 
-        galleryViewerImg.style.transformOrigin =
-            "center center";
+            galleryViewerImg.classList.add(
+                "animating"
+            );
 
-        galleryViewerImg.classList.remove(
-            "animating"
-        );
 
-    }, 300);
+            // --------------------------------------------------
+            // 최종 목표
+            // --------------------------------------------------
+
+            scale = 1;
+
+            translateX = 0;
+            translateY = 0;
+
+
+            galleryViewerImg.style.transform =
+                "translate(0px, 0px) scale(1)";
+
+
+            // --------------------------------------------------
+            // 애니메이션 종료
+            // --------------------------------------------------
+
+            setTimeout(() => {
+
+                galleryViewerImg.classList.remove(
+                    "animating"
+                );
+
+            }, 300);
+
+        });
+
+    });
 
 }
 
