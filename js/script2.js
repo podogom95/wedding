@@ -1136,33 +1136,6 @@ if (galleryViewer) {
 
 
             // ==================================================
-            // 축소 완료 → 가운데 정렬
-            // ==================================================
-
-            if (scale <= 1) {
-
-                scale = 1;
-
-                translateX = 0;
-                translateY = 0;
-
-                galleryViewerImg.classList.add("animating");
-
-                updateImageTransform();
-
-                setTimeout(() => {
-
-                    galleryViewerImg.classList.remove(
-                        "animating"
-                    );
-
-                }, 300);
-
-                return;
-            }
-
-
-            // ==================================================
             // 기본 상태 → 사진 스와이프
             // ==================================================
 
