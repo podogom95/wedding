@@ -320,12 +320,6 @@ let panStartTranslateX = 0;
 let panStartTranslateY = 0;
 
 
-// 핀치 시작 위치
-
-let pinchOriginX = 50;
-let pinchOriginY = 50;
-
-
 // ==================================================
 // 이미지 transform 적용
 // ==================================================
@@ -884,10 +878,6 @@ if (galleryViewer) {
 
                 pinchOriginY =
                     ((centerY - rect.top) / rect.height) * 100;
-
-
-                galleryViewerImg.style.transformOrigin =
-                    `${pinchOriginX}% ${pinchOriginY}%`;
 
             }
 
