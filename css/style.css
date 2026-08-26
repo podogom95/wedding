@@ -432,3 +432,168 @@ body.gallery-open {
     }
 
 }
+
+
+/* ==================================================
+   Wedding Calendar
+   ================================================== */
+
+.calendar {
+    text-align: center;
+    padding-top: 45px;
+    padding-bottom: 45px;
+}
+
+
+/* 작은 상단 문구 */
+
+.calendar-subtitle {
+    margin: 0 0 8px;
+
+    font-size: 12px;
+    letter-spacing: 2px;
+    color: #b8a6a2;
+}
+
+
+/* 월 */
+
+.calendar h2 {
+    margin: 0 0 30px;
+
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 22px;
+    font-weight: 400;
+
+    letter-spacing: 3px;
+    color: #444;
+}
+
+
+/* ==================================================
+   날짜 한 줄
+   ================================================== */
+
+.calendar-week {
+    display: grid;
+
+    grid-template-columns:
+        repeat(7, 1fr);
+
+    width: 100%;
+    max-width: 500px;
+
+    margin: 0 auto;
+
+    border-top: 1px solid #eee;
+    border-bottom: 1px solid #eee;
+
+    padding: 20px 0;
+}
+
+
+/* 각각의 날짜 */
+
+.calendar-day {
+    position: relative;
+
+    min-height: 65px;
+
+    display: flex;
+    flex-direction: column;
+
+    align-items: center;
+    justify-content: center;
+
+    color: #333;
+}
+
+
+/* 날짜 숫자 */
+
+.calendar-day .date {
+    font-family: Georgia, "Times New Roman", serif;
+
+    font-size: 20px;
+    line-height: 1;
+
+    font-weight: 400;
+}
+
+
+/* 이전 달 */
+
+.calendar-day .month {
+    margin-top: 6px;
+
+    font-family: Georgia, "Times New Roman", serif;
+
+    font-size: 8px;
+    letter-spacing: 1px;
+
+    color: #bdbdbd;
+}
+
+
+/* 11월 29일 / 30일 */
+
+.calendar-day:nth-child(1),
+.calendar-day:nth-child(2) {
+
+    color: #bdbdbd;
+
+}
+
+
+/* ==================================================
+   결혼식 날짜
+   ================================================== */
+
+.calendar-day.wedding-day {
+
+    color: #333;
+}
+
+
+/* 하트 */
+
+.calendar-day .heart {
+
+    position: absolute;
+
+    top: 1px;
+
+    font-size: 13px;
+
+    color: #c8aaa5;
+
+    line-height: 1;
+}
+
+
+/* 5일 숫자 */
+
+.calendar-day.wedding-day .date {
+
+    margin-top: 10px;
+
+    font-weight: 500;
+
+}
+
+
+/* ==================================================
+   아래 문구
+   ================================================== */
+
+.calendar-message {
+
+    margin: 25px 0 0;
+
+    font-size: 14px;
+
+    color: #777;
+
+    letter-spacing: 0.5px;
+
+}
