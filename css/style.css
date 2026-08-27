@@ -498,7 +498,7 @@ body.gallery-open {
 .calendar-day {
     position: relative;
 
-    min-height: 65px;
+    min-height: 55px;
 
     display: flex;
     flex-direction: column;
