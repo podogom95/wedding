@@ -678,20 +678,6 @@ body.gallery-open {
 }
 
 
-/* 제목 아래 문구 */
-
-.transport-subtitle {
-    text-align: center;
-
-    margin: 0 0 35px;
-
-    color: #999;
-
-    font-size: 13px;
-    line-height: 1.8;
-}
-
-
 /* ==================================================
    교통 섹션
    ================================================== */
@@ -713,33 +699,10 @@ body.gallery-open {
 
     border-bottom: 1px solid #eee;
 
-    font-size: 17px;
+    font-size: 18px;
     font-weight: 500;
 
     color: #444;
-}
-
-
-/* 아이콘 */
-
-.transport-icon {
-    display: inline-flex;
-
-    width: 30px;
-    height: 30px;
-
-    margin-right: 9px;
-
-    align-items: center;
-    justify-content: center;
-
-    border-radius: 50%;
-
-    background: #f8f1ef;
-
-    color: #b08a84;
-
-    font-size: 14px;
 }
 
 
@@ -755,7 +718,7 @@ body.gallery-open {
 .transport-group h4 {
     margin: 0 0 15px;
 
-    font-size: 14px;
+    font-size: 16px;
     font-weight: 500;
 
     color: #777;
@@ -773,7 +736,7 @@ body.gallery-open {
 
     margin-bottom: 20px;
 
-    font-size: 13px;
+    font-size: 15px;
 
     line-height: 1.7;
 
@@ -804,7 +767,7 @@ body.gallery-open {
 
     font-family: "Cormorant Garamond", serif;
 
-    font-size: 12px;
+    font-size: 14px;
 }
 
 
@@ -824,7 +787,7 @@ body.gallery-open {
 .walk {
     color: #aaa;
 
-    font-size: 11px;
+    font-size: 13px;
 }
 
 
@@ -840,7 +803,7 @@ body.gallery-open {
 .transport-note {
     color: #a18c88 !important;
 
-    font-size: 12px;
+    font-size: 14px;
 
     line-height: 1.6;
 }
@@ -882,7 +845,7 @@ body.gallery-open {
     align-items: center;
     justify-content: center;
 
-    margin-bottom: 15px;
+    margin-bottom: 17px;
 }
 
 
@@ -899,7 +862,7 @@ body.gallery-open {
 
     margin: 0;
 
-    font-size: 15px;
+    font-size: 16px;
 
     font-weight: 500;
 
@@ -913,7 +876,7 @@ body.gallery-open {
 
     margin-top: 2px;
 
-    font-size: 8px;
+    font-size: 11px;
 
     letter-spacing: 2px;
 
@@ -927,7 +890,7 @@ body.gallery-open {
 
     margin: 0 0 8px;
 
-    font-size: 12px;
+    font-size: 14px;
 
     line-height: 1.7;
 
@@ -939,7 +902,7 @@ body.gallery-open {
 
 .parking-count {
 
-    font-size: 12px;
+    font-size: 14px;
 
     font-weight: 400;
 
@@ -969,7 +932,7 @@ body.gallery-open {
     }
 
     .transport-item {
-        font-size: 12px;
+        font-size: 14px;
     }
 
     .bus-list {
