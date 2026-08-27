@@ -549,12 +549,6 @@ body.gallery-open {
    결혼식 날짜
    ================================================== */
 
-.calendar-day.wedding-day {
-
-    color: #333;
-}
-
-
 /* 하트 */
 
 .calendar-day .heart {
@@ -570,12 +564,12 @@ body.gallery-open {
     line-height: 1;
 }
 
-
 /* 5일 숫자 */
 
 .calendar-day.wedding-day .date {
 
     font-weight: 500;
+    color: #c8aaa5;
 
 }
 
