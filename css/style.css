@@ -594,3 +594,66 @@ body.gallery-open {
     letter-spacing: 0.5px;
 
 }
+
+/* ==================================================
+   Countdown
+   ================================================== */
+
+.countdown {
+
+    text-align: center;
+
+    padding: 25px 0;
+}
+
+.countdown-label {
+
+    font-size: 11px;
+
+    letter-spacing: 3px;
+    text-transform: uppercase;
+
+    color: #b8a6a2;
+
+    margin-bottom: 10px;
+}
+
+.countdown-dday {
+
+    font-family: "Cormorant Garamond", serif;
+
+    font-size: 42px;
+    font-weight: 400;
+
+    letter-spacing: 2px;
+
+    color: #444;
+
+    line-height: 1;
+}
+
+.countdown-dday span {
+
+    color: #b08a84;
+}
+
+.countdown-time {
+
+    margin-top: 12px;
+
+    font-family: "Cormorant Garamond", serif;
+
+    font-size: 20px;
+    font-weight: 400;
+
+    letter-spacing: 3px;
+
+    color: #777;
+}
+
+.countdown-time .separator {
+
+    color: #c8b5b0;
+
+    margin: 0 2px;
+}
