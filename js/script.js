@@ -53,6 +53,105 @@ function copyText(text) {
 
 
 // ==================================================
+// 예식 날짜
+// ==================================================
+
+const weddingDate = new Date("2026-12-05T13:00:00+09:00");
+
+// ==================================================
+// 서버 시간 오프셋 계산
+// ==================================================
+
+let serverOffset = 0;
+
+async function syncServerTime() {
+
+    const clientBefore = Date.now();
+
+    const response = await fetch(window.location.href, {
+        method: "HEAD",
+        cache: "no-store"
+    });
+
+    const clientAfter = Date.now();
+
+    const serverDate = response.headers.get("date");
+
+    if (!serverDate) return;
+
+    const serverTime = new Date(serverDate).getTime();
+
+    serverOffset =
+        serverTime -
+        ((clientBefore + clientAfter) / 2);
+}
+
+// ==================================================
+// 현재 서버시간 반환
+// ==================================================
+
+function getServerNow() {
+    return Date.now() + serverOffset;
+}
+
+// ==================================================
+// 카운트다운
+// ==================================================
+
+function updateCountdown() {
+
+    const diff = weddingDate.getTime() - getServerNow();
+
+    if (diff <= 0) {
+
+        document.getElementById("countdown").innerHTML =
+            "저희 결혼했습니다! 축해해주셔서 감사합니다 :)";
+
+        return;
+    }
+
+    const days =
+        Math.floor(diff / (1000 * 60 * 60 * 24));
+
+    const hours =
+        Math.floor(diff / (1000 * 60 * 60)) % 24;
+
+    const minutes =
+        Math.floor(diff / (1000 * 60)) % 60;
+
+    const seconds =
+        Math.floor(diff / 1000) % 60;
+
+    document.getElementById("days").textContent =
+        days;
+
+    document.getElementById("hours").textContent =
+        String(hours).padStart(2, "0");
+
+    document.getElementById("minutes").textContent =
+        String(minutes).padStart(2, "0");
+
+    document.getElementById("seconds").textContent =
+        String(seconds).padStart(2, "0");
+}
+
+// ==================================================
+// 시작
+// ==================================================
+
+async function startCountdown() {
+
+    await syncServerTime();
+
+    updateCountdown();
+
+    setInterval(updateCountdown, 1000);
+}
+
+startCountdown();
+
+
+// ==================================================
 // 배경음악
 // ==================================================
 
