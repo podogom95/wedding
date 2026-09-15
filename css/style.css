@@ -209,7 +209,7 @@ body{
     border:none;
 
     border-radius:20px;
-
+    min-width:70px;
     padding:8px 14px;
 
     background:#c8aaa5;
