@@ -35,14 +35,12 @@ document.querySelectorAll(".accordion").forEach(button => {
 // 계좌번호 복사
 // ==================================================
 
-function copyText(text) {
+function copyText(button, text) {
 
     navigator.clipboard.writeText(text)
         .then(() => {
 
-            const btn = event.target;
-
-            btn.textContent = "✓ 복사됨";
+            btn.textContent = "✓";
 
             setTimeout(() => {
                 btn.textContent = "복사";
