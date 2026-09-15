@@ -40,10 +40,10 @@ function copyText(button, text) {
     navigator.clipboard.writeText(text)
         .then(() => {
 
-            btn.textContent = "✓";
+            button.textContent = "✓";
 
             setTimeout(() => {
-                btn.textContent = "복사";
+                button.textContent = "복사";
             }, 1500);
 
         })
