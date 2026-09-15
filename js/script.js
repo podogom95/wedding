@@ -40,7 +40,13 @@ function copyText(text) {
     navigator.clipboard.writeText(text)
         .then(() => {
 
-            console.log("계좌번호 복사 완료");
+            const btn = event.target;
+
+            btn.textContent = "✓ 복사됨";
+
+            setTimeout(() => {
+                btn.textContent = "복사";
+            }, 1500);
 
         })
         .catch(error => {
