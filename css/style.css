@@ -45,21 +45,24 @@ body{
    message card
    ========================================= */
 
-.family-line{
-    margin:12px 0;
+.family-name{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    gap:8px;
+
+    margin:10px 0;
 }
 
-.family-line .name{
-    display:block;
+.family-name span{
+    color:#777;
+    font-size:14px;
+}
 
-    margin-top:4px;
-
+.family-name strong{
     color:#c8aaa5;
-
-    font-size:24px;
-    font-weight:600;
-
-    letter-spacing:2px;
+    font-size:22px;
+    font-weight:700;
 }
 
 /* =========================================
