@@ -920,6 +920,90 @@ body.gallery-open {
 }
 
 
+/* =========================================
+   Ending Card
+   ========================================= */
+
+.ending {
+    position: relative;
+    overflow: hidden;
+    padding: 0;
+}
+
+.ending img {
+    width: 100%;
+    display: block;
+    border-radius: 20px;
+}
+
+.ending-text {
+
+    position: absolute;
+
+    left: 50%;
+    top: 50%;
+
+    transform: translate(-50%, -50%);
+
+    width: 100%;
+
+    padding: 20px;
+
+    color: #fff;
+
+    text-align: center;
+
+    text-shadow:
+        0 2px 12px rgba(0,0,0,.35);
+}
+
+.save-date {
+
+    display: block;
+
+    margin-bottom: 12px;
+
+    font-size: 14px;
+
+    letter-spacing: 3px;
+
+    text-transform: uppercase;
+
+    opacity: .9;
+}
+
+.ending h2 {
+
+    margin: 0;
+
+    font-size: 42px;
+
+    font-weight: 300;
+
+    letter-spacing: 4px;
+}
+
+.ending p {
+
+    margin: 8px 0;
+
+    font-size: 15px;
+
+    letter-spacing: 2px;
+}
+
+.ending .venue {
+
+    margin-top: 16px;
+
+    font-size: 13px;
+
+    letter-spacing: 3px;
+
+    opacity: .9;
+}
+
+
 /* ==================================================
    모바일 보정
    ================================================== */
